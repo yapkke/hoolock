@@ -1,0 +1,13 @@
+System configuration:
+
+* Kernel version - 2.6.27
+  -- need the config file to compile a minimal version
+  # wget http://www.kernel.org/pub/linux/kernel/v2.6/linux-2.6.27.tar.gz
+  # tar -zxf linux-2.6.27.tar.gz
+  # wget http://noxrepo.org/linux2.6.qemu.config
+  # cp linux2.6.qemu.config linux-2.6.27/.config
+  # cd linux-2.6.27/
+  # yes '' | make oldconfig
+  # make bzImage
+* OpenFlow version
+* Nox version
