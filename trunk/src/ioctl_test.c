@@ -38,8 +38,8 @@ int main(int argc, char *argv[])
 
 	struct ifreq ifr;
 	strcpy(ifr.ifr_name, bond_name);
-	if (ioctl(skfd, SIOCBONDTEST, &ifr) < 0) {
-		printf("IOCTL call failed :(\n");
+	if (ioctl(skfd, SIOCBONDHOOLOCKTEST, &ifr) < 0) {
+		printf("ioctl call failed :(\n");
 		return -1;
 	}
 	
