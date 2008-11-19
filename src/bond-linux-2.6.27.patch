@@ -939,7 +939,7 @@ Only in bond-linux-2.6.27/drivers/net/bonding: bonding.o
 Only in bond-linux-2.6.27/drivers/net/bonding: .bonding.o.cmd
 diff -aur linux-2.6.27/drivers/net/bonding/bond_main.c bond-linux-2.6.27/drivers/net/bonding/bond_main.c
 --- linux-2.6.27/drivers/net/bonding/bond_main.c	2008-10-09 15:13:53.000000000 -0700
-+++ bond-linux-2.6.27/drivers/net/bonding/bond_main.c	2008-11-12 17:32:00.000000000 -0800
++++ bond-linux-2.6.27/drivers/net/bonding/bond_main.c	2008-11-18 22:32:07.000000000 -0800
 @@ -121,7 +121,7 @@
  MODULE_PARM_DESC(mode, "Mode of operation : 0 for balance-rr, "
  		       "1 for active-backup, 2 for balance-xor, "
@@ -1031,7 +1031,7 @@ diff -aur linux-2.6.27/drivers/net/bonding/bond_main.c bond-linux-2.6.27/drivers
 +	/*
 +	 */
 +	struct bonding *bond = dev->priv;
-+	if((bond->buffer_mode) && (orig_dev == bond->curr_active_slave)) {
++	if((bond->buffer_mode) && (orig_dev == (struct net_device*)bond->curr_active_slave)) {
 +		spin_lock_bh(&bond->pbuffer_lock);
 +		skb_queue_tail(&(bond->pbuff), skb);
 +		spin_unlock_bh(&bond->pbuffer_lock);
@@ -1093,16 +1093,18 @@ diff -aur linux-2.6.27/drivers/net/bonding/bond_main.c bond-linux-2.6.27/drivers
  	if (bond->params.arp_validate)
  		bond_unregister_arp(bond);
  
-@@ -3909,6 +4004,8 @@
+@@ -3908,6 +4003,10 @@
+ 	struct ifslave __user *u_sinfo = NULL;
  	struct mii_ioctl_data *mii = NULL;
  	int res = 0;
- 
-+	struct bonding *bond = bond_dev->priv;
++	int i;
++	struct slave *slave_pos;
 +
++	struct bonding *bond = bond_dev->priv;
+ 
  	dprintk("bond_ioctl: master=%s, cmd=%d\n",
  		bond_dev->name, cmd);
- 
-@@ -3975,6 +4072,33 @@
+@@ -3975,6 +4074,34 @@
  		}
  
  		return res;
@@ -1121,8 +1123,6 @@ diff -aur linux-2.6.27/drivers/net/bonding/bond_main.c bond-linux-2.6.27/drivers
 +	case SIOCBONDHOOLOCKGETPASSIVE:
 +		u_sinfo = (struct ifslave __user *)ifr->ifr_data;
 +
-+		int i;
-+		struct slave *slave_pos;
 +		bond_for_each_slave(bond, slave_pos, i) {
 +			if(slave_pos != bond->curr_active_slave) {
 +				strncpy(u_sinfo->slave_name, slave_pos->dev->name, IFNAMSIZ);
@@ -1133,10 +1133,13 @@ diff -aur linux-2.6.27/drivers/net/bonding/bond_main.c bond-linux-2.6.27/drivers
 +			}
 +		}
 +		return -EFAULT;
++	case SIOCBONDHOOLOCKTEST:
++		printk("Yay! Bond ioctl test works!\n");
++		return 0;
  	default:
  		/* Go on */
  		break;
-@@ -4010,6 +4134,12 @@
+@@ -4010,6 +4137,12 @@
  		case SIOCBONDCHANGEACTIVE:
  			res = bond_ioctl_change_active(bond_dev, slave_dev);
  			break;
@@ -1149,7 +1152,7 @@ diff -aur linux-2.6.27/drivers/net/bonding/bond_main.c bond-linux-2.6.27/drivers
  		default:
  			res = -EOPNOTSUPP;
  		}
-@@ -4279,6 +4409,38 @@
+@@ -4279,6 +4412,38 @@
  	return 0;
  }
  
@@ -1188,7 +1191,7 @@ diff -aur linux-2.6.27/drivers/net/bonding/bond_main.c bond-linux-2.6.27/drivers
  
  /*
   * in active-backup mode, we know that bond->curr_active_slave is always valid if
-@@ -4473,6 +4635,9 @@
+@@ -4473,6 +4638,9 @@
  		bond_dev->hard_start_xmit = bond_alb_xmit;
  		bond_dev->set_mac_address = bond_alb_set_mac_address;
  		break;
@@ -1198,7 +1201,7 @@ diff -aur linux-2.6.27/drivers/net/bonding/bond_main.c bond-linux-2.6.27/drivers
  	default:
  		/* Should never happen, mode already checked */
  		printk(KERN_ERR DRV_NAME
-@@ -4524,6 +4689,8 @@
+@@ -4524,6 +4692,8 @@
  	bond->send_grat_arp = 0;
  	bond->setup_by_slave = 0;
  	INIT_LIST_HEAD(&bond->vlan_list);
@@ -2031,8 +2034,8 @@ diff -aur linux-2.6.27/include/linux/if_bonding.h bond-linux-2.6.27/include/linu
  #define BOND_LINK_UP    0           /* link is up and running */
 diff -aur linux-2.6.27/include/linux/sockios.h bond-linux-2.6.27/include/linux/sockios.h
 --- linux-2.6.27/include/linux/sockios.h	2008-10-09 15:13:53.000000000 -0700
-+++ bond-linux-2.6.27/include/linux/sockios.h	2008-11-11 13:34:11.000000000 -0800
-@@ -115,6 +115,12 @@
++++ bond-linux-2.6.27/include/linux/sockios.h	2008-11-18 23:01:28.000000000 -0800
+@@ -115,6 +115,13 @@
  #define SIOCBONDSLAVEINFOQUERY 0x8993   /* rtn info about slave state   */
  #define SIOCBONDINFOQUERY      0x8994	/* rtn info about bond state    */
  #define SIOCBONDCHANGEACTIVE   0x8995   /* update to a new active slave */
@@ -2042,6 +2045,7 @@ diff -aur linux-2.6.27/include/linux/sockios.h bond-linux-2.6.27/include/linux/s
 +#define SIOCBONDHOOLOCKBREAK		0x8997	/* break */
 +#define SIOCBONDHOOLOCKGETACTIVE	0x8998	/* get active slave */
 +#define SIOCBONDHOOLOCKGETPASSIVE	0x8999	/* get passive slave */
++#define SIOCBONDHOOLOCKTEST		0x899a	/* test ioctl */
  			
  /* bridge calls */
  #define SIOCBRADDBR     0x89a0		/* create new bridge device     */
@@ -2742,7 +2746,7 @@ Only in bond-linux-2.6.27/net/core: datagram.o
 Only in bond-linux-2.6.27/net/core: .datagram.o.cmd
 diff -aur linux-2.6.27/net/core/dev.c bond-linux-2.6.27/net/core/dev.c
 --- linux-2.6.27/net/core/dev.c	2008-10-09 15:13:53.000000000 -0700
-+++ bond-linux-2.6.27/net/core/dev.c	2008-11-11 21:33:37.000000000 -0800
++++ bond-linux-2.6.27/net/core/dev.c	2008-11-18 23:01:25.000000000 -0800
 @@ -2236,6 +2236,12 @@
  		}
  	}
@@ -2756,6 +2760,30 @@ diff -aur linux-2.6.27/net/core/dev.c bond-linux-2.6.27/net/core/dev.c
  #ifdef CONFIG_NET_CLS_ACT
  	skb = handle_ing(skb, &pt_prev, &ret, orig_dev);
  	if (!skb)
+@@ -3588,6 +3594,11 @@
+ 			    cmd == SIOCBONDSLAVEINFOQUERY ||
+ 			    cmd == SIOCBONDINFOQUERY ||
+ 			    cmd == SIOCBONDCHANGEACTIVE ||
++			    cmd == SIOCBONDHOOLOCKMAKE ||
++			    cmd == SIOCBONDHOOLOCKBREAK ||
++			    cmd == SIOCBONDHOOLOCKGETACTIVE ||
++			    cmd == SIOCBONDHOOLOCKGETPASSIVE ||
++			    cmd == SIOCBONDHOOLOCKTEST ||
+ 			    cmd == SIOCGMIIPHY ||
+ 			    cmd == SIOCGMIIREG ||
+ 			    cmd == SIOCSMIIREG ||
+@@ -3746,6 +3757,11 @@
+ 		case SIOCBONDRELEASE:
+ 		case SIOCBONDSETHWADDR:
+ 		case SIOCBONDCHANGEACTIVE:
++		case SIOCBONDHOOLOCKMAKE:
++		case SIOCBONDHOOLOCKBREAK:
++		case SIOCBONDHOOLOCKGETACTIVE:
++		case SIOCBONDHOOLOCKGETPASSIVE:
++		case SIOCBONDHOOLOCKTEST:
+ 		case SIOCBRADDIF:
+ 		case SIOCBRDELIF:
+ 			if (!capable(CAP_NET_ADMIN))
 Only in bond-linux-2.6.27/net/core: dev_mcast.o
 Only in bond-linux-2.6.27/net/core: .dev_mcast.o.cmd
 Only in bond-linux-2.6.27/net/core: dev.o
