@@ -31,44 +31,45 @@ int main(int argc, char *argv[])
 		printf("Need bond name!\n");
 		return -1;
 	}
-	printf("Getting argv1\n");
 	bond_name = argv[1];
-	printf("Opening socket\n");
 	if ((skfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
 		printf("Failed to open socket\n");
 		return -1;
 	}
 
-	printf("Copying bond name to ifr\n");
 	struct ifreq ifr;
+	ifr.ifr_data = (void *) malloc(sizeof(struct ifslave));
 	strcpy(ifr.ifr_name, bond_name);
 
 	while(1) {
-		char cmd[50];
-		printf("Entering while loop\n");
+		char slave[IFNAMSIZ];
+		int ret;
 
 		/* Get active and passive slave names */
-		if (ioctl(skfd, SIOCBONDHOOLOCKGETACTIVE, &ifr) < 0) {
-			printf("BondGetActive ioctl call failed :(\n");
+		if ((ret = ioctl(skfd, SIOCBONDHOOLOCKGETACTIVE, &ifr)) < 0) {
+			printf("BondGetActive ioctl call failed : %d\n", ret);
 			return -1;
 		}
-		printf("Active slave : %s\n", ((struct ifslave *)ifr.ifr_data)->slave_name);
-		if (ioctl(skfd, SIOCBONDHOOLOCKGETPASSIVE, &ifr) < 0) {
-			printf("BondGetPassive ioctl call failed :(\n");
+		printf("Active slave : %s\n", ((struct ifslave *)(ifr.ifr_data))->slave_name);
+		if ((ret = ioctl(skfd, SIOCBONDHOOLOCKGETPASSIVE, &ifr)) < 0) {
+			printf("BondGetPassive ioctl call failed : %d\n", ret);
 			return -1;
 		}
-		printf("Passive slave : %s\n", ((struct ifslave *)ifr.ifr_data)->slave_name);
+		strcpy(slave, ((struct ifslave *)ifr.ifr_data)->slave_name);
+		printf("Passive slave : %s\n", slave);
 		printf("-------------------------------------------------\n");
 
-		printf("Command : ");
-		scanf("%s", cmd);
-		if(strcmp(cmd, "q") == 0)
-			break;
+
+		printf("Hit enter to switch : ");
+		getchar();
+
+		/* Fill ifr.ifr_slave with some junk value */
+		//strcpy((char *)ifr.ifr_slave, slave);
 
 		/* Make */
 		printf("Calling BondMake\n");
-		if (ioctl(skfd, SIOCBONDHOOLOCKMAKE, &ifr) < 0) {
-			printf("BondMake ioctl call failed :(\n");
+		if ((ret = ioctl(skfd, SIOCBONDHOOLOCKMAKE, &ifr)) < 0) {
+			printf("BondMake ioctl call failed : %d\n", ret);
 			return -1;
 		}
 
@@ -77,8 +78,8 @@ int main(int argc, char *argv[])
 
 		/* Break */
 		printf("Calling BondBreak\n");
-		if (ioctl(skfd, SIOCBONDHOOLOCKBREAK, &ifr) < 0) {
-			printf("BondBreak ioctl call failed :(\n");
+		if ((ret = ioctl(skfd, SIOCBONDHOOLOCKBREAK, &ifr)) < 0) {
+			printf("BondBreak ioctl call failed : %d\n", ret);
 			return -1;
 		}
 
