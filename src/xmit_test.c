@@ -53,10 +53,6 @@ int main(int argc, char *argv[])
 
 		// Create socket
 		int sock;
-		if((sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0){
-			perror("Can't create TCP socket");
-			exit(1);
-		}
 		struct sockaddr_in *remote = (struct sockaddr_in *)malloc(sizeof(struct sockaddr_in *));
 		remote->sin_family = AF_INET;
 		int tmpres = inet_pton(AF_INET, ip, (void *)(&(remote->sin_addr.s_addr)));
@@ -99,6 +95,10 @@ int main(int argc, char *argv[])
 		printf("Calling BondMake\n");
 
 		// Tell plumber
+		if((sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0){
+			perror("Can't create TCP socket");
+			exit(1);
+		}
 		if(connect(sock, (struct sockaddr *)remote, sizeof(struct sockaddr)) < 0){
 			perror("Could not connect");
 			exit(1);
@@ -127,6 +127,10 @@ int main(int argc, char *argv[])
 		printf("Calling BondBreak\n");
 
 		// Tell plumber
+		if((sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0){
+			perror("Can't create TCP socket");
+			exit(1);
+		}
 		if(connect(sock, (struct sockaddr *)remote, sizeof(struct sockaddr)) < 0){
 			perror("Could not connect");
 			exit(1);
