@@ -78,31 +78,6 @@ int main(int argc, char *argv[])
 				     return;
 			     }
 		     }
-		     /*if(buffer[5] == '0') {
-			     eth0_pid = fork();
-			     if(eth0_pid == 0) {
-				     // child process 
-				     //close(newsockfd);
-				     //close(sockfd);
-				     printf("Make: mobile0SW <====> openflow0SW\n");
-				     execl("/usr/bin/dpipe", "/usr/bin/dpipe", "vde_plug", "/home/nikhilh/vm/Hoolock/vde/ctlmobile0SW", "=", "wirefilter", "=", "vde_plug", "/home/nikhilh/vm/Hoolock/vde/ctlopenflow0SW", (char*)0);
-				     return;
-			     }
-		     }
-		     else if(buffer[5] == '1') {
-			     eth1_pid = fork();
-			     if(eth1_pid == 0) {
-				     // child process
-				     //close(newsockfd);
-				     //close(sockfd);
-				     printf("Make: mobile1SW <====> openflow1SW\n");
-				     execl("/usr/bin/dpipe", "/usr/bin/dpipe", "vde_plug", "/home/nikhilh/vm/Hoolock/vde/ctlmobile1SW", "=", "wirefilter", "=", "vde_plug", "/home/nikhilh/vm/Hoolock/vde/ctlopenflow1SW", (char*)0);
-				     return;
-			     }
-		     }
-		     else {
-			     printf("Bad make command! Shouldn't be seeing this.\n");
-		     }*/
 	     }
 	     else if(strncmp(buffer, "break", 4) == 0) {
 		     if(buffer[5] == '0') {
