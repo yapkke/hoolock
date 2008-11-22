@@ -57,42 +57,74 @@ int main(int argc, char *argv[])
 
 	     // Based on the command fork a process
 	     if(strncmp(buffer, "make", 4) == 0) {
-		     if(buffer[5] == '0') {
-			     if((eth0_pid = fork()) == 0) {
-				     /* child process */
-				     close(newsockfd);
-				     close(sockfd);
+		     /* 
+		      * If it's a make, both the pipes must be connected
+		      */
+		     if(eth0_pid < 0) {
+			     eth0_pid = fork();
+			     if(eth0_pid == 0) {
+				     // child process 
 				     printf("Make: mobile0SW <====> openflow0SW\n");
-				     system("dpipe vde_plug /home/nikhilh/vm/Hoolock/vde/ctlmobile0SW = wirefilter = vde_plug /home/nikhilh/vm/Hoolock/vde/ctlopenflow0SW");
+				     execl("/usr/bin/dpipe", "/usr/bin/dpipe", "vde_plug", "/home/nikhilh/vm/Hoolock/vde/ctlmobile0SW", "=", "wirefilter", "=", "vde_plug", "/home/nikhilh/vm/Hoolock/vde/ctlopenflow0SW", (char*)0);
+				     return;
+			     }
+		     }
+		     if(eth1_pid < 0) {
+			     eth1_pid = fork();
+			     if(eth1_pid == 0) {
+				     // child process
+				     printf("Make: mobile1SW <====> openflow1SW\n");
+				     execl("/usr/bin/dpipe", "/usr/bin/dpipe", "vde_plug", "/home/nikhilh/vm/Hoolock/vde/ctlmobile1SW", "=", "wirefilter", "=", "vde_plug", "/home/nikhilh/vm/Hoolock/vde/ctlopenflow1SW", (char*)0);
+				     return;
+			     }
+		     }
+		     /*if(buffer[5] == '0') {
+			     eth0_pid = fork();
+			     if(eth0_pid == 0) {
+				     // child process 
+				     //close(newsockfd);
+				     //close(sockfd);
+				     printf("Make: mobile0SW <====> openflow0SW\n");
+				     execl("/usr/bin/dpipe", "/usr/bin/dpipe", "vde_plug", "/home/nikhilh/vm/Hoolock/vde/ctlmobile0SW", "=", "wirefilter", "=", "vde_plug", "/home/nikhilh/vm/Hoolock/vde/ctlopenflow0SW", (char*)0);
+				     return;
 			     }
 		     }
 		     else if(buffer[5] == '1') {
-			     if((eth1_pid = fork()) == 0) {
-				     /* child process */
-				     close(newsockfd);
-				     close(sockfd);
+			     eth1_pid = fork();
+			     if(eth1_pid == 0) {
+				     // child process
+				     //close(newsockfd);
+				     //close(sockfd);
 				     printf("Make: mobile1SW <====> openflow1SW\n");
-				     system("dpipe vde_plug /home/nikhilh/vm/Hoolock/vde/ctlmobile1SW = wirefilter = vde_plug /home/nikhilh/vm/Hoolock/vde/ctlopenflow1SW");
+				     execl("/usr/bin/dpipe", "/usr/bin/dpipe", "vde_plug", "/home/nikhilh/vm/Hoolock/vde/ctlmobile1SW", "=", "wirefilter", "=", "vde_plug", "/home/nikhilh/vm/Hoolock/vde/ctlopenflow1SW", (char*)0);
+				     return;
 			     }
 		     }
 		     else {
 			     printf("Bad make command! Shouldn't be seeing this.\n");
-		     }
+		     }*/
 	     }
 	     else if(strncmp(buffer, "break", 4) == 0) {
 		     if(buffer[5] == '0') {
 			     printf("Break: mobile0SW <====> openflow0SW\n");
-			     kill(eth0_pid, 9);
+			     if(eth0_pid > 0) {
+				     kill(eth0_pid, 9);
+			     }
 			     eth0_pid = -1;
 		     }
 		     else if(buffer[5] == '1') {
 			     printf("Break: mobile1SW <====> openflow1SW\n");
-			     kill(eth1_pid, 9);
+			     if(eth1_pid > 0) {
+				     kill(eth1_pid, 9);
+			     }
 			     eth1_pid = -1;
 		     }
 		     else {
 			     printf("Bad break command! Shouldn't be seeing this.\n");
 		     }
+	     }
+	     else {
+		     printf("Bad command! Shouldn't be seeing this.\n");
 	     }
 
 	     n = write(newsockfd,"Plumber executed the command!", 29);
