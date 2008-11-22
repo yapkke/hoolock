@@ -7,6 +7,7 @@
 #include <fcntl.h>
 #include <getopt.h>
 #include <pthread.h>
+#include <netdb.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/ioctl.h>
@@ -15,12 +16,15 @@
 #include <linux/if_ether.h>
 #include <linux/if_bonding.h>
 #include <linux/sockios.h>
+#include <linux/ethtool.h>
+#include <arpa/inet.h>
+
+#define PORT 20000
 
 typedef unsigned long long u64;	/* hack, so we may include kernel's ethtool.h */
 typedef __uint32_t u32;		/* ditto */
 typedef __uint16_t u16;		/* ditto */
 typedef __uint8_t u8;		/* ditto */
-#include <linux/ethtool.h>
 
 int main(int argc, char *argv[])
 {
@@ -42,21 +46,46 @@ int main(int argc, char *argv[])
 	strcpy(ifr.ifr_name, bond_name);
 
 	while(1) {
-		char slave[IFNAMSIZ];
+		char act_slave[IFNAMSIZ], pas_slave[IFNAMSIZ];
 		int ret;
+		char buffer[256], plumb_cmd[50];
+		char ip[] = "10.0.2.2";
+
+		// Create socket
+		int sock;
+		if((sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0){
+			perror("Can't create TCP socket");
+			exit(1);
+		}
+		struct sockaddr_in *remote = (struct sockaddr_in *)malloc(sizeof(struct sockaddr_in *));
+		remote->sin_family = AF_INET;
+		int tmpres = inet_pton(AF_INET, ip, (void *)(&(remote->sin_addr.s_addr)));
+		if( tmpres < 0)  
+		{
+			perror("Can't set remote->sin_addr.s_addr");
+			exit(1);
+		}
+		else if(tmpres == 0)
+		{
+			fprintf(stderr, "%s is not a valid IP address\n", ip);
+			exit(1);
+		}
+		remote->sin_port = htons(PORT);
 
 		/* Get active and passive slave names */
 		if ((ret = ioctl(skfd, SIOCBONDHOOLOCKGETACTIVE, &ifr)) < 0) {
 			printf("BondGetActive ioctl call failed : %d\n", ret);
 			return -1;
 		}
-		printf("Active slave : %s\n", ((struct ifslave *)(ifr.ifr_data))->slave_name);
+		strcpy(act_slave, ((struct ifslave *)ifr.ifr_data)->slave_name);
+		printf("Active slave : %s\n", act_slave);
+
 		if ((ret = ioctl(skfd, SIOCBONDHOOLOCKGETPASSIVE, &ifr)) < 0) {
 			printf("BondGetPassive ioctl call failed : %d\n", ret);
 			return -1;
 		}
-		strcpy(slave, ((struct ifslave *)ifr.ifr_data)->slave_name);
-		printf("Passive slave : %s\n", slave);
+		strcpy(pas_slave, ((struct ifslave *)ifr.ifr_data)->slave_name);
+		printf("Passive slave : %s\n", pas_slave);
 		printf("-------------------------------------------------\n");
 
 
@@ -68,6 +97,24 @@ int main(int argc, char *argv[])
 
 		/* Make */
 		printf("Calling BondMake\n");
+
+		// Tell plumber
+		if(connect(sock, (struct sockaddr *)remote, sizeof(struct sockaddr)) < 0){
+			perror("Could not connect");
+			exit(1);
+		}
+		strcpy(plumb_cmd, "make x");
+		plumb_cmd[5] = pas_slave[3];
+		tmpres = write(sock, plumb_cmd, strlen(plumb_cmd));
+		if (tmpres < 0) 
+			perror("ERROR writing to socket");
+		bzero(buffer,256);
+		tmpres = read(sock, buffer, 255);
+		if (tmpres < 0) 
+			perror("ERROR reading from socket");
+		printf("%s\n",buffer);
+		close(sock);
+
 		if ((ret = ioctl(skfd, SIOCBONDHOOLOCKMAKE, &ifr)) < 0) {
 			printf("BondMake ioctl call failed : %d\n", ret);
 			return -1;
@@ -78,6 +125,24 @@ int main(int argc, char *argv[])
 
 		/* Break */
 		printf("Calling BondBreak\n");
+
+		// Tell plumber
+		if(connect(sock, (struct sockaddr *)remote, sizeof(struct sockaddr)) < 0){
+			perror("Could not connect");
+			exit(1);
+		}
+		strcpy(plumb_cmd, "break x");
+		plumb_cmd[5] = act_slave[3];
+		tmpres = write(sock, plumb_cmd, strlen(plumb_cmd));
+		if (tmpres < 0) 
+			perror("ERROR writing to socket");
+		bzero(buffer,256);
+		tmpres = read(sock, buffer, 255);
+		if (tmpres < 0) 
+			perror("ERROR reading from socket");
+		printf("%s\n",buffer);
+		close(sock);
+
 		if ((ret = ioctl(skfd, SIOCBONDHOOLOCKBREAK, &ifr)) < 0) {
 			printf("BondBreak ioctl call failed : %d\n", ret);
 			return -1;
