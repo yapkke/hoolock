@@ -18,8 +18,10 @@
 #include <linux/sockios.h>
 #include <linux/ethtool.h>
 #include <arpa/inet.h>
+#include <netinet/in.h>
+#include <inttypes.h>
 
-// STL 
+/* STL */
 #include <iostream>
 #include <string>
 
@@ -34,8 +36,7 @@ typedef __uint8_t u8;		/* ditto */
 
 int main(int argc, char *argv[])
 {
-	string start_msg("Hello World!\nI'm the client...");
-	cout << start_msg << endl;
+	int ret;
 
 	/* Open a basic socket */
 	int skfd = -1;
@@ -50,13 +51,26 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
+
 	struct ifreq ifr;
 	ifr.ifr_data = (void *) malloc(sizeof(struct ifslave));
 	strcpy(ifr.ifr_name, bond_name);
 
+	/* Get MAC address */
+	string mac, hex_mac;
+	long long int n_dec_mac = 0, dec_mac = 0;
+	if ((ret = ioctl(skfd, SIOCGIFHWADDR, &ifr)) < 0) {
+		printf("GetHWAdr ioctl call failed : %d\n", ret);
+		return -1;
+	}
+	memcpy(&n_dec_mac, ifr.ifr_hwaddr.sa_data, 6);
+	dec_mac = (long long)ntohl((long)n_dec_mac) << 16 | (long long)ntohs((short)(n_dec_mac >> 32));
+	printf("Mac Address in hex : %llx\n", (long long int)dec_mac);
+
+	return 0;
+
 	while(1) {
 		char act_slave[IFNAMSIZ], pas_slave[IFNAMSIZ];
-		int ret;
 		char buffer[256], plumb_cmd[50];
 		char ip[] = "10.0.2.2";
 
