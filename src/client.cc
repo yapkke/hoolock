@@ -28,6 +28,7 @@
 #include "message.h"
 
 #define PORT 20000
+#define NOX_PORT 1304
 
 using namespace std;
 
@@ -53,21 +54,53 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-
 	struct ifreq ifr;
 	ifr.ifr_data = (void *) malloc(sizeof(struct ifslave));
 	strcpy(ifr.ifr_name, bond_name);
 
-	/* Get MAC address */
-	string mac, hex_mac;
+	/* Get MAC address 
+	 * hexmac: stores the mac address at the end of this block
+	 */
 	long long int n_dec_mac = 0, dec_mac = 0;
+	char hexmac[13], tmpmac[13];
 	if ((ret = ioctl(skfd, SIOCGIFHWADDR, &ifr)) < 0) {
 		printf("GetHWAdr ioctl call failed : %d\n", ret);
 		return -1;
 	}
 	memcpy(&n_dec_mac, ifr.ifr_hwaddr.sa_data, 6);
 	dec_mac = (long long)ntohl((long)n_dec_mac) << 16 | (long long)ntohs((short)(n_dec_mac >> 32));
-	printf("Mac Address in hex : %llx\n", (long long int)dec_mac);
+	sprintf(tmpmac, "%llx", (long long int)dec_mac);
+	int i;
+	for(i = 0; i < (int)(12 - strlen(tmpmac)); i++) {
+		hexmac[i] = '0';
+	}
+	strcpy(hexmac + i, tmpmac);
+
+	/* Open nox-socket connection 
+	 * nox_sock: is the socket to nox
+	 */
+	int nox_sock;
+	char nox_ip[] = "10.0.2.2";
+	struct sockaddr_in *nox_host= (struct sockaddr_in *)malloc(sizeof(struct sockaddr_in *));
+	nox_host->sin_family = AF_INET;
+	int tmpres = inet_pton(AF_INET, nox_ip, (void *)(&(nox_host->sin_addr.s_addr)));
+	if( tmpres < 0) {
+		perror("Can't set nox_host->sin_addr.s_addr");
+		exit(1);
+	}
+	else if(tmpres == 0) {
+		fprintf(stderr, "%s is not a valid IP address\n", nox_ip);
+		exit(1);
+	}
+	nox_host->sin_port = htons(NOX_PORT);
+	if((nox_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0){
+		perror("Can't create NOX TCP socket");
+		exit(1);
+	}
+	if(connect(nox_sock, (struct sockaddr *)nox_host, sizeof(struct sockaddr)) < 0){
+		perror("Could not connect to nox_host");
+		exit(1);
+	}
 
 	while(1) {
 		char act_slave[IFNAMSIZ], pas_slave[IFNAMSIZ];
@@ -144,7 +177,7 @@ int main(int argc, char *argv[])
 		}
 
 		/* sleep */
-		sleep(0.1);
+		//sleep(0.1);
 
 		/* Break */
 		printf("Calling BondBreak\n");
