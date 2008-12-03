@@ -102,6 +102,11 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
 
+	/* misc variables */
+	int msg_size = sizeof(struct Hoolock_msg) + 1;
+	struct Hoolock_msg *hmsg;
+	int bytes_in, bytes_out;
+
 	while(1) {
 		char act_slave[IFNAMSIZ], pas_slave[IFNAMSIZ];
 		char buffer[256], plumb_cmd[50];
@@ -141,13 +146,51 @@ int main(int argc, char *argv[])
 		printf("-------------------------------------------------\n");
 
 
-		printf("Hit enter to switch : ");
-		getchar();
+		printf("Press <enter> to switch (or 'q' to quit): ");
+		char a = getchar();
+		if(a == 'q') {
+			close(nox_sock);
+			return 0;
+		}
 
 		/* Fill ifr.ifr_slave with some junk value */
 		//strcpy((char *)ifr.ifr_slave, slave);
 
 		/* Make */
+
+		//Tell nox
+		/* Send MAKE_REQ to nox
+		 * Wait for MAKE_ACK
+		 */
+		char *make_msg = new char[msg_size];
+		make_msg[msg_size - 1] = ';';
+		hmsg = (struct Hoolock_msg *)make_msg;
+		strncpy(hmsg->msg_id, "hoolock", 7);
+		strncpy(hmsg->hostMac, hexmac, 12);
+		hmsg->cmd = MAKE_REQ;
+		bytes_out = 0;
+		while(bytes_out < msg_size) {
+			tmpres = write(nox_sock, make_msg+bytes_out, msg_size-bytes_out);
+			if (tmpres < 0) 
+				perror("ERROR writing to nox_sock");
+			bytes_out += tmpres;
+		}
+
+		char *make_ack_msg = new char[msg_size];
+		bzero(make_ack_msg, msg_size);
+		bytes_in = 0;
+		while(bytes_in < msg_size) {
+			tmpres = read(nox_sock, make_ack_msg+bytes_in, msg_size-bytes_in);
+			if (tmpres < 0) 
+				perror("ERROR reading from nox_sock");
+			bytes_in += tmpres;
+		}
+		hmsg = (struct Hoolock_msg *)make_ack_msg;
+		if(hmsg->cmd != MAKE_ACK) {
+			cout << "Didn't get MAKE_ACK...something's wrong - exiting" << endl;
+			return -1;
+		}
+
 		printf("Calling BondMake\n");
 
 		// Tell plumber
@@ -171,16 +214,54 @@ int main(int argc, char *argv[])
 		printf("%s\n",buffer);
 		close(sock);
 
+		//Tell bond
 		if ((ret = ioctl(skfd, SIOCBONDHOOLOCKMAKE, &ifr)) < 0) {
 			printf("BondMake ioctl call failed : %d\n", ret);
 			return -1;
 		}
 
-		/* sleep */
-		//sleep(0.1);
-
 		/* Break */
+
+		//Tell nox
+		/* Send BREAK_REQ to nox
+		 * Wait for BREAK_ACK
+		 */
+		char *break_msg = new char[msg_size];
+		break_msg[msg_size - 1] = ';';
+		hmsg = (struct Hoolock_msg *)break_msg;
+		strncpy(hmsg->msg_id, "hoolock", 7);
+		strncpy(hmsg->hostMac, hexmac, 12);
+		hmsg->cmd = BREAK_REQ;
+		bytes_out = 0;
+		while(bytes_out < msg_size) {
+			tmpres = write(nox_sock, break_msg+bytes_out, msg_size-bytes_out);
+			if (tmpres < 0) 
+				perror("ERROR writing to nox_sock");
+			bytes_out += tmpres;
+		}
+
+		char *break_ack_msg = new char[msg_size];
+		bzero(break_ack_msg, msg_size);
+		bytes_in = 0;
+		while(bytes_in < msg_size) {
+			tmpres = read(nox_sock, break_ack_msg+bytes_in, msg_size-bytes_in);
+			if (tmpres < 0) 
+				perror("ERROR reading from nox_sock");
+			bytes_in += tmpres;
+		}
+		hmsg = (struct Hoolock_msg *)break_ack_msg;
+		if(hmsg->cmd != BREAK_ACK) {
+			cout << "Didn't get BREAK_ACK...something's wrong - exiting" << endl;
+			return -1;
+		}
+
+
+		//Tell bond
 		printf("Calling BondBreak\n");
+		if ((ret = ioctl(skfd, SIOCBONDHOOLOCKBREAK, &ifr)) < 0) {
+			printf("BondBreak ioctl call failed : %d\n", ret);
+			return -1;
+		}
 
 		// Tell plumber
 		if((sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0){
@@ -202,11 +283,6 @@ int main(int argc, char *argv[])
 			perror("ERROR reading from socket");
 		printf("%s\n",buffer);
 		close(sock);
-
-		if ((ret = ioctl(skfd, SIOCBONDHOOLOCKBREAK, &ifr)) < 0) {
-			printf("BondBreak ioctl call failed : %d\n", ret);
-			return -1;
-		}
 
 		printf("-------------------------------------------------\n");
 	}
