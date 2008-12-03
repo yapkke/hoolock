@@ -25,6 +25,8 @@
 #include <iostream>
 #include <string>
 
+#include "message.h"
+
 #define PORT 20000
 
 using namespace std;
@@ -66,8 +68,6 @@ int main(int argc, char *argv[])
 	memcpy(&n_dec_mac, ifr.ifr_hwaddr.sa_data, 6);
 	dec_mac = (long long)ntohl((long)n_dec_mac) << 16 | (long long)ntohs((short)(n_dec_mac >> 32));
 	printf("Mac Address in hex : %llx\n", (long long int)dec_mac);
-
-	return 0;
 
 	while(1) {
 		char act_slave[IFNAMSIZ], pas_slave[IFNAMSIZ];
