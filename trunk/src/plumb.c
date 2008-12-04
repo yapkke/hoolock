@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
 		      * It's the caller's responsibility to ensure at least
 		      * on pipe is connected
 		      */
-		     if(buffer[4] == '0') {
+		     if(buffer[5] == '0') {
 			     if(eth0_pid < 0) {
 				     eth0_pid = fork();
 				     if(eth0_pid == 0) {
@@ -73,7 +73,7 @@ int main(int argc, char *argv[])
 				     }
 			     }
 		     }
-		     else if(buffer[4] == '1') {
+		     else if(buffer[5] == '1') {
 			     if(eth1_pid < 0) {
 				     eth1_pid = fork();
 				     if(eth1_pid == 0) {
@@ -86,14 +86,14 @@ int main(int argc, char *argv[])
 		     }
 	     }
 	     else if(strncmp(buffer, "break", 5) == 0) {
-		     if(buffer[5] == '0') {
+		     if(buffer[6] == '0') {
 			     printf("Break: mobile0SW <====> openflow0SW\n");
 			     if(eth0_pid > 0) {
 				     kill(eth0_pid, 9);
 			     }
 			     eth0_pid = -1;
 		     }
-		     else if(buffer[5] == '1') {
+		     else if(buffer[6] == '1') {
 			     printf("Break: mobile1SW <====> openflow1SW\n");
 			     if(eth1_pid > 0) {
 				     kill(eth1_pid, 9);
