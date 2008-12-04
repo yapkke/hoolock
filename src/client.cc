@@ -39,7 +39,6 @@ typedef __uint8_t u8;		/* ditto */
 
 int main(int argc, char *argv[])
 {
-	int ret;
 
 	/* Open a basic socket */
 	int skfd = -1;
@@ -54,20 +53,21 @@ int main(int argc, char *argv[])
 		return -1;
 	}
 
-	struct ifreq ifr;
-	ifr.ifr_data = (void *) malloc(sizeof(struct ifslave));
-	strcpy(ifr.ifr_name, bond_name);
-
 	/* Get MAC address 
 	 * hexmac: stores the mac address at the end of this block
 	 */
+	struct ifreq mac_ifr;
+	mac_ifr.ifr_data = (void *) malloc(sizeof(struct ifslave));
+	strcpy(mac_ifr.ifr_name, bond_name);
+
+	int ret;
 	long long int n_dec_mac = 0, dec_mac = 0;
 	char hexmac[13], tmpmac[13];
-	if ((ret = ioctl(skfd, SIOCGIFHWADDR, &ifr)) < 0) {
+	if ((ret = ioctl(skfd, SIOCGIFHWADDR, &mac_ifr)) < 0) {
 		printf("GetHWAdr ioctl call failed : %d\n", ret);
 		return -1;
 	}
-	memcpy(&n_dec_mac, ifr.ifr_hwaddr.sa_data, 6);
+	memcpy(&n_dec_mac, mac_ifr.ifr_hwaddr.sa_data, 6);
 	dec_mac = (long long)ntohl((long)n_dec_mac) << 16 | (long long)ntohs((short)(n_dec_mac >> 32));
 	sprintf(tmpmac, "%llx", (long long int)dec_mac);
 	int i;
@@ -75,6 +75,8 @@ int main(int argc, char *argv[])
 		hexmac[i] = '0';
 	}
 	strcpy(hexmac + i, tmpmac);
+
+	cout << "Starting client program on host : " << hexmac << endl;
 
 	/* Open nox-socket connection 
 	 * nox_sock: is the socket to nox
@@ -101,34 +103,71 @@ int main(int argc, char *argv[])
 		perror("Could not connect to nox_host");
 		exit(1);
 	}
+	cout << "Connected to NOX controller on IP address " << nox_ip << endl;
+
+	/* Bond ioctl data */
+	struct ifreq ifr;
+	ifr.ifr_data = (void *) malloc(sizeof(struct ifslave));
+	strcpy(ifr.ifr_name, bond_name);
 
 	/* misc variables */
 	int msg_size = sizeof(struct Hoolock_msg) + 1;
 	struct Hoolock_msg *hmsg;
 	int bytes_in, bytes_out;
 
+	/* plumb socket variables */
+	char act_slave[IFNAMSIZ], pas_slave[IFNAMSIZ];
+	char buffer[256], plumb_cmd[50];
+	char ip[] = "10.0.2.2";
+
+	// Create socket
+	int sock;
+	struct sockaddr_in *remote = (struct sockaddr_in *)malloc(sizeof(struct sockaddr_in *));
+	remote->sin_family = AF_INET;
+	tmpres = inet_pton(AF_INET, ip, (void *)(&(remote->sin_addr.s_addr)));
+	if( tmpres < 0)  
+	{
+		perror("Can't set remote->sin_addr.s_addr");
+		exit(1);
+	}
+	else if(tmpres == 0)
+	{
+		fprintf(stderr, "%s is not a valid IP address\n", ip);
+		exit(1);
+	}
+	remote->sin_port = htons(PORT);
+
+	/* Get active slave */
+	if ((ret = ioctl(skfd, SIOCBONDHOOLOCKGETACTIVE, &ifr)) < 0) {
+		printf("BondGetActive ioctl call failed : %d\n", ret);
+		return -1;
+	}
+	strcpy(act_slave, ((struct ifslave *)ifr.ifr_data)->slave_name);
+
+	/* Create the first link */
+	if((sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0){
+		perror("Can't create TCP socket");
+		exit(1);
+	}
+	if(connect(sock, (struct sockaddr *)remote, sizeof(struct sockaddr)) < 0){
+		perror("Could not connect");
+		exit(1);
+	}
+	strcpy(plumb_cmd, "make x");
+	plumb_cmd[5] = act_slave[3];
+	cout << "Sending to plumber : " << plumb_cmd << endl;
+	tmpres = write(sock, plumb_cmd, strlen(plumb_cmd));
+	if (tmpres < 0) 
+		perror("ERROR writing to socket");
+	bzero(buffer,256);
+	tmpres = read(sock, buffer, 255);
+	if (tmpres < 0) 
+		perror("ERROR reading from socket");
+	cout << "Received from plumber : " << buffer << endl;
+	close(sock);
+	printf("-------------------------------------------------\n");
+
 	while(1) {
-		char act_slave[IFNAMSIZ], pas_slave[IFNAMSIZ];
-		char buffer[256], plumb_cmd[50];
-		char ip[] = "10.0.2.2";
-
-		// Create socket
-		int sock;
-		struct sockaddr_in *remote = (struct sockaddr_in *)malloc(sizeof(struct sockaddr_in *));
-		remote->sin_family = AF_INET;
-		int tmpres = inet_pton(AF_INET, ip, (void *)(&(remote->sin_addr.s_addr)));
-		if( tmpres < 0)  
-		{
-			perror("Can't set remote->sin_addr.s_addr");
-			exit(1);
-		}
-		else if(tmpres == 0)
-		{
-			fprintf(stderr, "%s is not a valid IP address\n", ip);
-			exit(1);
-		}
-		remote->sin_port = htons(PORT);
-
 		/* Get active and passive slave names */
 		if ((ret = ioctl(skfd, SIOCBONDHOOLOCKGETACTIVE, &ifr)) < 0) {
 			printf("BondGetActive ioctl call failed : %d\n", ret);
@@ -150,6 +189,7 @@ int main(int argc, char *argv[])
 		char a = getchar();
 		if(a == 'q') {
 			close(nox_sock);
+			printf("Smooth exit\n");
 			return 0;
 		}
 
@@ -162,6 +202,7 @@ int main(int argc, char *argv[])
 		/* Send MAKE_REQ to nox
 		 * Wait for MAKE_ACK
 		 */
+		cout << "Sending MAKE_REQ to nox" << endl;
 		char *make_msg = new char[msg_size];
 		make_msg[msg_size - 1] = ';';
 		hmsg = (struct Hoolock_msg *)make_msg;
@@ -175,6 +216,7 @@ int main(int argc, char *argv[])
 				perror("ERROR writing to nox_sock");
 			bytes_out += tmpres;
 		}
+		delete[] make_msg;
 
 		char *make_ack_msg = new char[msg_size];
 		bzero(make_ack_msg, msg_size);
@@ -190,8 +232,8 @@ int main(int argc, char *argv[])
 			cout << "Didn't get MAKE_ACK...something's wrong - exiting" << endl;
 			return -1;
 		}
-
-		printf("Calling BondMake\n");
+		delete[] make_ack_msg;
+		cout << "Received MAKE_ACK from nox" << endl;
 
 		// Tell plumber
 		if((sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0){
@@ -204,6 +246,7 @@ int main(int argc, char *argv[])
 		}
 		strcpy(plumb_cmd, "make x");
 		plumb_cmd[5] = pas_slave[3];
+		cout << "Sending to plumber : " << plumb_cmd << endl;
 		tmpres = write(sock, plumb_cmd, strlen(plumb_cmd));
 		if (tmpres < 0) 
 			perror("ERROR writing to socket");
@@ -211,10 +254,11 @@ int main(int argc, char *argv[])
 		tmpres = read(sock, buffer, 255);
 		if (tmpres < 0) 
 			perror("ERROR reading from socket");
-		printf("%s\n",buffer);
+		cout << "Received from plumber : " << buffer << endl;
 		close(sock);
 
 		//Tell bond
+		cout << "Calling BOND_MAKE" << endl;
 		if ((ret = ioctl(skfd, SIOCBONDHOOLOCKMAKE, &ifr)) < 0) {
 			printf("BondMake ioctl call failed : %d\n", ret);
 			return -1;
@@ -226,6 +270,7 @@ int main(int argc, char *argv[])
 		/* Send BREAK_REQ to nox
 		 * Wait for BREAK_ACK
 		 */
+		cout << "Sending BREAK_REQ to nox" << endl;
 		char *break_msg = new char[msg_size];
 		break_msg[msg_size - 1] = ';';
 		hmsg = (struct Hoolock_msg *)break_msg;
@@ -239,6 +284,7 @@ int main(int argc, char *argv[])
 				perror("ERROR writing to nox_sock");
 			bytes_out += tmpres;
 		}
+		delete[] break_msg;
 
 		char *break_ack_msg = new char[msg_size];
 		bzero(break_ack_msg, msg_size);
@@ -254,10 +300,12 @@ int main(int argc, char *argv[])
 			cout << "Didn't get BREAK_ACK...something's wrong - exiting" << endl;
 			return -1;
 		}
+		delete[] break_ack_msg;
+		cout << "Received BREAK_ACK from nox" << endl;
 
 
 		//Tell bond
-		printf("Calling BondBreak\n");
+		cout << "Calling BOND_BREAK" << endl;
 		if ((ret = ioctl(skfd, SIOCBONDHOOLOCKBREAK, &ifr)) < 0) {
 			printf("BondBreak ioctl call failed : %d\n", ret);
 			return -1;
@@ -273,7 +321,8 @@ int main(int argc, char *argv[])
 			exit(1);
 		}
 		strcpy(plumb_cmd, "break x");
-		plumb_cmd[5] = act_slave[3];
+		plumb_cmd[6] = act_slave[3];
+		cout << "Sending to plumber : " << plumb_cmd << endl;
 		tmpres = write(sock, plumb_cmd, strlen(plumb_cmd));
 		if (tmpres < 0) 
 			perror("ERROR writing to socket");
@@ -281,13 +330,12 @@ int main(int argc, char *argv[])
 		tmpres = read(sock, buffer, 255);
 		if (tmpres < 0) 
 			perror("ERROR reading from socket");
-		printf("%s\n",buffer);
+		cout << "Received from plumber : " << buffer << endl;
 		close(sock);
 
 		printf("-------------------------------------------------\n");
 	}
 
-	printf("Smooth exit\n");
 	return 0;
 
 }
