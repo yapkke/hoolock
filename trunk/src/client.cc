@@ -263,6 +263,9 @@ int main(int argc, char *argv[])
 			printf("BondMake ioctl call failed : %d\n", ret);
 			return -1;
 		}
+		
+		/* Artificial sleep */
+		sleep(1);
 
 		/* Break */
 

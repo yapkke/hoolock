@@ -68,7 +68,7 @@ int main(int argc, char *argv[])
 				     if(eth0_pid == 0) {
 					     // child process 
 					     printf("Make: mobile0SW <====> openflow0SW\n");
-					     execl("/usr/bin/dpipe", "/usr/bin/dpipe", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlmobile0SW", "=", "wirefilter", "=", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlopenflow0SW", (char*)0);
+					     execl("/usr/bin/dpipe", "/usr/bin/dpipe", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlmobile0SW", "=", "wirefilter", "-d", "100", "=", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlopenflow0SW", (char*)0);
 					     return;
 				     }
 			     }
