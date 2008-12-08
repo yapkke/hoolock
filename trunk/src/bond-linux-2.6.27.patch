@@ -560,7 +560,6 @@ Only in bond-linux-2.6.27/crypto: tea.mod.o
 Only in bond-linux-2.6.27/crypto: .tea.mod.o.cmd
 Only in bond-linux-2.6.27/crypto: tea.o
 Only in bond-linux-2.6.27/crypto: .tea.o.cmd
-Only in bond-linux-2.6.27/Documentation/networking: ifenslave
 Only in bond-linux-2.6.27/drivers/atm: built-in.o
 Only in bond-linux-2.6.27/drivers/atm: .built-in.o.cmd
 Only in bond-linux-2.6.27/drivers/atm: modules.order
@@ -890,7 +889,6 @@ Only in bond-linux-2.6.27/drivers/net/appletalk: .ipddp.mod.o.cmd
 Only in bond-linux-2.6.27/drivers/net/appletalk: ipddp.o
 Only in bond-linux-2.6.27/drivers/net/appletalk: .ipddp.o.cmd
 Only in bond-linux-2.6.27/drivers/net/appletalk: modules.order
-Only in bond-linux-2.6.27/drivers/net/bonding: .bond_3ad.c.swp
 Only in bond-linux-2.6.27/drivers/net/bonding: bond_3ad.o
 Only in bond-linux-2.6.27/drivers/net/bonding: .bond_3ad.o.cmd
 Only in bond-linux-2.6.27/drivers/net/bonding: bond_alb.o
@@ -938,7 +936,7 @@ Only in bond-linux-2.6.27/drivers/net/bonding: bonding.o
 Only in bond-linux-2.6.27/drivers/net/bonding: .bonding.o.cmd
 diff -aur linux-2.6.27/drivers/net/bonding/bond_main.c bond-linux-2.6.27/drivers/net/bonding/bond_main.c
 --- linux-2.6.27/drivers/net/bonding/bond_main.c	2008-10-09 15:13:53.000000000 -0700
-+++ bond-linux-2.6.27/drivers/net/bonding/bond_main.c	2008-11-21 11:39:15.000000000 -0800
++++ bond-linux-2.6.27/drivers/net/bonding/bond_main.c	2008-12-07 20:16:27.000000000 -0800
 @@ -121,7 +121,7 @@
  MODULE_PARM_DESC(mode, "Mode of operation : 0 for balance-rr, "
  		       "1 for active-backup, 2 for balance-xor, "
@@ -978,7 +976,7 @@ diff -aur linux-2.6.27/drivers/net/bonding/bond_main.c bond-linux-2.6.27/drivers
  	default:
  		dprintk("This slave is always active in trunk mode\n");
  
-@@ -2221,6 +2230,87 @@
+@@ -2221,6 +2230,116 @@
  	return 0;
  }
  
@@ -993,6 +991,8 @@ diff -aur linux-2.6.27/drivers/net/bonding/bond_main.c bond-linux-2.6.27/drivers
 +	 */
 +	int i;
 +	struct slave *slave_pos;
++	/* Acquire the locks */
++	read_lock(&bond->lock);
 +	write_lock_bh(&bond->curr_slave_lock);
 +	bond_for_each_slave(bond, slave_pos, i) {
 +		if(slave_pos != bond->curr_active_slave) {
@@ -1001,7 +1001,9 @@ diff -aur linux-2.6.27/drivers/net/bonding/bond_main.c bond-linux-2.6.27/drivers
 +		}
 +	}
 +	bond->buffer_mode = 1;
++	/* Release the locks */
 +	write_unlock_bh(&bond->curr_slave_lock);
++	read_unlock(&bond->lock);
 +	return 0;
 +}
 +
@@ -1015,25 +1017,30 @@ diff -aur linux-2.6.27/drivers/net/bonding/bond_main.c bond-linux-2.6.27/drivers
 +	 */
 +	int ret = 0;
 +	struct sk_buff *pb = NULL;
++	struct iphdr *iph;
 +
 +	/* Acquire lock 1 */
 +	write_lock_bh((rwlock_t*)&bond->pbuff.lock);
++	/* Acquire lock 2 */
++	read_lock(&bond->lock);
++	write_lock_bh(&bond->curr_slave_lock);
++
 +
 +	bond->buffer_mode = 0;
 +	while(!skb_queue_empty(&bond->pbuff)) {
 +
-+		/* Acquire lock 2 */
-+		read_lock_bh(&bond->curr_slave_lock);
-+
 +		pb = skb_dequeue(&bond->pbuff);
++		iph = ip_hdr(pb);
++		printk("bond_ioctl_break: Releasing packet from %ld\n", (long)ntohl(iph->saddr));
 +		pb->dev = bond->curr_active_slave->dev;
 +
-+		/* Release lock 2 */
-+		read_unlock_bh(&bond->curr_slave_lock);
-+
++		printk("bond_ioctl_break: skb count = %d (should be 1)\n", atomic_read(&pb->users));
 +		ret = netif_receive_skb(pb);
 +	}
 +
++	/* Release lock 2 */
++	write_unlock_bh(&bond->curr_slave_lock);
++	read_unlock(&bond->lock);
 +	/* Release lock 1 */
 +	write_unlock_bh((rwlock_t*)&bond->pbuff.lock);
 +	
@@ -1045,28 +1052,48 @@ diff -aur linux-2.6.27/drivers/net/bonding/bond_main.c bond-linux-2.6.27/drivers
 +	/*
 +	 * Acquire pbuff lock before curr_slave_lock to prevent deadlock with bond_ioctl_break
 +	 */
++	int ret = NET_RX_SUCCESS;
 +	struct bonding *bond = dev->priv;
 +
++	struct iphdr *iph = ip_hdr(skb);
++	__be32 curr_ip;
++	read_lock(&bond->lock);
++	curr_ip = bond->master_ip;
++	read_unlock(&bond->lock);
++	/* Don't buffer if the packet is being transmitted
++	 * Note: This function gets called even for xmit because we've registered it as ptype_all
++	 */
++	if(((__be32)ntohl(iph->saddr)) == (__be32)(ntohl(curr_ip))) {
++		//return ret;
++		goto RETURN_FREE;
++	}
++
 +	/* Acquire locks */
-+	write_lock_bh((rwlock_t*)&bond->pbuff.lock);
++	read_lock(&bond->lock);
 +	read_lock_bh(&bond->curr_slave_lock);
 +
 +	if((bond->buffer_mode) && (orig_dev == (struct net_device*)bond->curr_active_slave)) {
++		write_lock_bh((rwlock_t*)&bond->pbuff.lock);
++		printk("bond_hoolock_recv: Buffering packet from %s\n", orig_dev->name);
 +		skb_queue_tail(&(bond->pbuff), skb);
-+		return -EHOOLOCKBUFF;
++		ret = -EHOOLOCKBUFF;
++		write_unlock_bh((rwlock_t*)&bond->pbuff.lock);
 +	}
 +
 +	/* Release locks */
 +	read_unlock_bh(&bond->curr_slave_lock);
-+	write_unlock_bh((rwlock_t*)&bond->pbuff.lock);
++	read_unlock(&bond->lock);
 +
-+	return 0;
++RETURN_FREE:
++	dev_kfree_skb(skb);
++RETURN_NO_FREE:
++	return ret;
 +}
 +
  /*-------------------------------- Monitoring -------------------------------*/
  
  
-@@ -3690,6 +3780,25 @@
+@@ -3690,6 +3809,32 @@
  	pt->type = 0;
  }
  
@@ -1075,8 +1102,12 @@ diff -aur linux-2.6.27/drivers/net/bonding/bond_main.c bond-linux-2.6.27/drivers
 +{
 +	struct packet_type *pk_type = &(bond->hoolock_pt);
 +
++	if(pk_type->type)
++		return;
++
++	printk("Registering HOOLOCK packet type\n");
 +	/* initialize packet type */
-+	pk_type->type = ETH_P_ALL;	//XXX - Do we want to buffer _every_ packet received?
++	pk_type->type = htons(ETH_P_ALL);	//XXX - Do we want to buffer _every_ packet received?
 +	pk_type->dev = bond->dev;
 +	pk_type->func = bond_hoolock_recv;
 +
@@ -1086,13 +1117,16 @@ diff -aur linux-2.6.27/drivers/net/bonding/bond_main.c bond-linux-2.6.27/drivers
 +/* unregister to receive hoolock packets on a bond */
 +static void bond_unregister_hoolock(struct bonding *bond)
 +{
-+	dev_remove_pack(&(bond->hoolock_pt));
++	struct packet_type *pk_type = &(bond->hoolock_pt);
++
++	dev_remove_pack(pk_type);
++	pk_type->type = 0;
 +}
 +
  /*---------------------------- Hashing Policies -----------------------------*/
  
  /*
-@@ -3795,6 +3904,11 @@
+@@ -3795,6 +3940,11 @@
  		bond_register_lacpdu(bond);
  	}
  
@@ -1104,7 +1138,7 @@ diff -aur linux-2.6.27/drivers/net/bonding/bond_main.c bond-linux-2.6.27/drivers
  	return 0;
  }
  
-@@ -3807,6 +3921,11 @@
+@@ -3807,6 +3957,11 @@
  		bond_unregister_lacpdu(bond);
  	}
  
@@ -1116,7 +1150,7 @@ diff -aur linux-2.6.27/drivers/net/bonding/bond_main.c bond-linux-2.6.27/drivers
  	if (bond->params.arp_validate)
  		bond_unregister_arp(bond);
  
-@@ -3908,6 +4027,10 @@
+@@ -3908,6 +4063,10 @@
  	struct ifslave __user *u_sinfo = NULL;
  	struct mii_ioctl_data *mii = NULL;
  	int res = 0;
@@ -1127,12 +1161,14 @@ diff -aur linux-2.6.27/drivers/net/bonding/bond_main.c bond-linux-2.6.27/drivers
  
  	dprintk("bond_ioctl: master=%s, cmd=%d\n",
  		bond_dev->name, cmd);
-@@ -3975,6 +4098,41 @@
+@@ -3975,6 +4134,51 @@
  		}
  
  		return res;
 +	case SIOCBONDHOOLOCKGETACTIVE:
 +		u_sinfo = (struct ifslave __user *)ifr->ifr_data;
++		read_lock(&bond->lock);
++		read_lock(&bond->curr_slave_lock);
 +		if(!bond->curr_active_slave) {
 +			printk("Damn! No active slave!\n");
 +			return -EFAULT;
@@ -1142,20 +1178,28 @@ diff -aur linux-2.6.27/drivers/net/bonding/bond_main.c bond-linux-2.6.27/drivers
 +		u_sinfo->link = bond->curr_active_slave->link;
 +		u_sinfo->state = bond->curr_active_slave->state;
 +		u_sinfo->link_failure_count = bond->curr_active_slave->link_failure_count;
++		read_unlock(&bond->curr_slave_lock);
++		read_unlock(&bond->lock);
 +
 +		return 0;
 +	case SIOCBONDHOOLOCKGETPASSIVE:
 +		u_sinfo = (struct ifslave __user *)ifr->ifr_data;
 +
++		read_lock(&bond->lock);
++		read_lock(&bond->curr_slave_lock);
 +		bond_for_each_slave(bond, slave_pos, i) {
 +			if(slave_pos != bond->curr_active_slave) {
 +				strncpy(u_sinfo->slave_name, slave_pos->dev->name, IFNAMSIZ);
 +				u_sinfo->link = slave_pos->link;
 +				u_sinfo->state = slave_pos->state;
 +				u_sinfo->link_failure_count = slave_pos->link_failure_count;
++				read_unlock(&bond->curr_slave_lock);
++				read_unlock(&bond->lock);
 +				return 0;
 +			}
 +		}
++		read_unlock(&bond->curr_slave_lock);
++		read_unlock(&bond->lock);
 +		return -EFAULT;
 +	case SIOCBONDHOOLOCKMAKE:
 +		res = bond_ioctl_make(bond);
@@ -1169,7 +1213,7 @@ diff -aur linux-2.6.27/drivers/net/bonding/bond_main.c bond-linux-2.6.27/drivers
  	default:
  		/* Go on */
  		break;
-@@ -4010,6 +4168,12 @@
+@@ -4010,6 +4214,12 @@
  		case SIOCBONDCHANGEACTIVE:
  			res = bond_ioctl_change_active(bond_dev, slave_dev);
  			break;
@@ -1182,7 +1226,7 @@ diff -aur linux-2.6.27/drivers/net/bonding/bond_main.c bond-linux-2.6.27/drivers
  		default:
  			res = -EOPNOTSUPP;
  		}
-@@ -4279,6 +4443,38 @@
+@@ -4279,6 +4489,38 @@
  	return 0;
  }
  
@@ -1221,7 +1265,7 @@ diff -aur linux-2.6.27/drivers/net/bonding/bond_main.c bond-linux-2.6.27/drivers
  
  /*
   * in active-backup mode, we know that bond->curr_active_slave is always valid if
-@@ -4473,6 +4669,9 @@
+@@ -4473,6 +4715,9 @@
  		bond_dev->hard_start_xmit = bond_alb_xmit;
  		bond_dev->set_mac_address = bond_alb_set_mac_address;
  		break;
@@ -1231,7 +1275,7 @@ diff -aur linux-2.6.27/drivers/net/bonding/bond_main.c bond-linux-2.6.27/drivers
  	default:
  		/* Should never happen, mode already checked */
  		printk(KERN_ERR DRV_NAME
-@@ -4509,6 +4708,10 @@
+@@ -4509,6 +4754,10 @@
  	rwlock_init(&bond->lock);
  	rwlock_init(&bond->curr_slave_lock);
  
@@ -1242,7 +1286,7 @@ diff -aur linux-2.6.27/drivers/net/bonding/bond_main.c bond-linux-2.6.27/drivers
  	bond->params = *params; /* copy params struct */
  
  	bond->wq = create_singlethread_workqueue(bond_dev->name);
-@@ -4524,6 +4727,7 @@
+@@ -4524,6 +4773,7 @@
  	bond->send_grat_arp = 0;
  	bond->setup_by_slave = 0;
  	INIT_LIST_HEAD(&bond->vlan_list);
@@ -1250,7 +1294,18 @@ diff -aur linux-2.6.27/drivers/net/bonding/bond_main.c bond-linux-2.6.27/drivers
  
  	/* Initialize the device entry points */
  	bond_dev->open = bond_open;
-Only in bond-linux-2.6.27/drivers/net/bonding: .bond_main.c.swp
+@@ -4807,6 +5057,11 @@
+ 		       updelay);
+ 	}
+ 
++	if(bond_mode == BOND_MODE_HOOLOCK) {
++		printk(KERN_INFO DRV_NAME
++				": Mode set to HOOLOCK\n");
++	}
++
+ 	if (!miimon) {
+ 		if (updelay || downdelay) {
+ 			/* just warn the user the up/down delay will have
 Only in bond-linux-2.6.27/drivers/net/bonding: bond_main.o
 Only in bond-linux-2.6.27/drivers/net/bonding: .bond_main.o.cmd
 Only in bond-linux-2.6.27/drivers/net/bonding: bond_sysfs.o
@@ -2787,13 +2842,28 @@ Only in bond-linux-2.6.27/net/core: datagram.o
 Only in bond-linux-2.6.27/net/core: .datagram.o.cmd
 diff -aur linux-2.6.27/net/core/dev.c bond-linux-2.6.27/net/core/dev.c
 --- linux-2.6.27/net/core/dev.c	2008-10-09 15:13:53.000000000 -0700
-+++ bond-linux-2.6.27/net/core/dev.c	2008-11-18 23:01:25.000000000 -0800
-@@ -2236,6 +2236,12 @@
++++ bond-linux-2.6.27/net/core/dev.c	2008-12-07 13:28:49.000000000 -0800
+@@ -2227,15 +2227,26 @@
+ 	}
+ #endif
+ 
++	int buffered = 0;
+ 	list_for_each_entry_rcu(ptype, &ptype_all, list) {
+ 		if (ptype->dev == null_or_orig || ptype->dev == skb->dev ||
+ 		    ptype->dev == orig_dev) {
+-			if (pt_prev)
++			if (pt_prev) {
+ 				ret = deliver_skb(skb, pt_prev, orig_dev);
++				if(ret == -EHOOLOCKBUFF) {
++					buffered = 1;
++				}
++			}
+ 			pt_prev = ptype;
  		}
  	}
  
 +	/* hoolock specific changes */
-+	if(ret == -EHOOLOCKBUFF) {
++	if(buffered) {
 +		ret = 0;
 +		goto out;
 +	}
@@ -2801,7 +2871,22 @@ diff -aur linux-2.6.27/net/core/dev.c bond-linux-2.6.27/net/core/dev.c
  #ifdef CONFIG_NET_CLS_ACT
  	skb = handle_ing(skb, &pt_prev, &ret, orig_dev);
  	if (!skb)
-@@ -3588,6 +3594,11 @@
+@@ -2256,8 +2267,13 @@
+ 		if (ptype->type == type &&
+ 		    (ptype->dev == null_or_orig || ptype->dev == skb->dev ||
+ 		     ptype->dev == orig_dev)) {
+-			if (pt_prev)
++			if (pt_prev) {
+ 				ret = deliver_skb(skb, pt_prev, orig_dev);
++				if(ret == -EHOOLOCKBUFF) {
++					//buffered = 1;
++					goto out;
++				}
++			}
+ 			pt_prev = ptype;
+ 		}
+ 	}
+@@ -3588,6 +3604,11 @@
  			    cmd == SIOCBONDSLAVEINFOQUERY ||
  			    cmd == SIOCBONDINFOQUERY ||
  			    cmd == SIOCBONDCHANGEACTIVE ||
@@ -2813,7 +2898,7 @@ diff -aur linux-2.6.27/net/core/dev.c bond-linux-2.6.27/net/core/dev.c
  			    cmd == SIOCGMIIPHY ||
  			    cmd == SIOCGMIIREG ||
  			    cmd == SIOCSMIIREG ||
-@@ -3746,6 +3757,11 @@
+@@ -3746,6 +3767,11 @@
  		case SIOCBONDRELEASE:
  		case SIOCBONDSETHWADDR:
  		case SIOCBONDCHANGEACTIVE:
@@ -4813,22 +4898,7 @@ Only in bond-linux-2.6.27/scripts/kconfig: .conf.o.cmd
 Only in bond-linux-2.6.27/scripts/kconfig: kxgettext.o
 Only in bond-linux-2.6.27/scripts/kconfig: .kxgettext.o.cmd
 Only in bond-linux-2.6.27/scripts/kconfig: lex.zconf.c
-Only in bond-linux-2.6.27/scripts/kconfig/lxdialog: checklist.o
-Only in bond-linux-2.6.27/scripts/kconfig/lxdialog: .checklist.o.cmd
-Only in bond-linux-2.6.27/scripts/kconfig/lxdialog: inputbox.o
-Only in bond-linux-2.6.27/scripts/kconfig/lxdialog: .inputbox.o.cmd
-Only in bond-linux-2.6.27/scripts/kconfig/lxdialog: menubox.o
-Only in bond-linux-2.6.27/scripts/kconfig/lxdialog: .menubox.o.cmd
-Only in bond-linux-2.6.27/scripts/kconfig/lxdialog: textbox.o
-Only in bond-linux-2.6.27/scripts/kconfig/lxdialog: .textbox.o.cmd
-Only in bond-linux-2.6.27/scripts/kconfig/lxdialog: util.o
-Only in bond-linux-2.6.27/scripts/kconfig/lxdialog: .util.o.cmd
-Only in bond-linux-2.6.27/scripts/kconfig/lxdialog: yesno.o
-Only in bond-linux-2.6.27/scripts/kconfig/lxdialog: .yesno.o.cmd
 Only in bond-linux-2.6.27/scripts/kconfig: mconf
-Only in bond-linux-2.6.27/scripts/kconfig: .mconf.cmd
-Only in bond-linux-2.6.27/scripts/kconfig: mconf.o
-Only in bond-linux-2.6.27/scripts/kconfig: .mconf.o.cmd
 Only in bond-linux-2.6.27/scripts/kconfig: zconf.hash.c
 Only in bond-linux-2.6.27/scripts/kconfig: zconf.tab.c
 Only in bond-linux-2.6.27/scripts/kconfig: zconf.tab.o
