@@ -23,6 +23,16 @@ int main(int argc, char *argv[])
      int sockfd, portno, clilen;
      struct sockaddr_in serv_addr, cli_addr;
      pid_t eth0_pid = -1, eth1_pid = -1;
+     int is_hard = 0;
+     if(argc < 2) {
+	     error("Usage: plumb <handover_type>");
+     }
+     
+     // Set flag for hard-handover
+     if(strncmp(argv[1], "hard", 4) == 0) {
+	     is_hard = 1;
+     }
+
      sockfd = socket(AF_INET, SOCK_STREAM, 0);
      if (sockfd < 0) {
         error("ERROR opening socket");
@@ -78,8 +88,14 @@ int main(int argc, char *argv[])
 				     eth1_pid = fork();
 				     if(eth1_pid == 0) {
 					     // child process
-					     printf("Make: mobile1SW <====> openflow1SW\n");
-					     execl("/usr/bin/dpipe", "/usr/bin/dpipe", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlmobile1SW", "=", "wirefilter", "=", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlopenflow1SW", (char*)0);
+					     if(is_hard) {
+						     printf("Make: mobile0SW <====> openflow1SW\n");
+						     execl("/usr/bin/dpipe", "/usr/bin/dpipe", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlmobile0SW", "=", "wirefilter", "=", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlopenflow1SW", (char*)0);
+					     }
+					     else {
+						     printf("Make: mobile1SW <====> openflow1SW\n");
+						     execl("/usr/bin/dpipe", "/usr/bin/dpipe", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlmobile1SW", "=", "wirefilter", "=", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlopenflow1SW", (char*)0);
+					     }
 					     return;
 				     }
 			     }
@@ -94,7 +110,12 @@ int main(int argc, char *argv[])
 			     eth0_pid = -1;
 		     }
 		     else if(buffer[6] == '1') {
-			     printf("Break: mobile1SW <====> openflow1SW\n");
+			     if(is_hard) {
+				     printf("Break: mobile0SW <====> openflow1SW\n");
+			     }
+			     else {
+				     printf("Break: mobile1SW <====> openflow1SW\n");
+			     }
 			     if(eth1_pid > 0) {
 				     kill(eth1_pid, 9);
 			     }
