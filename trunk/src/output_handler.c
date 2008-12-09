@@ -59,10 +59,10 @@ int main(int argc, char *argv[])
 	     printf("Opening file %s for output\n", fname);
 	     fp = fopen(fname, "w");
 
-	     bzero(buffer,256);
 
 	     do {
 		     // Read the command
+		     bzero(buffer,256);
 		     n = read(newsockfd, buffer, 255);
 		     if (n < 0) 
 			     error("ERROR reading from socket");
