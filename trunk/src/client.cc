@@ -1,4 +1,5 @@
 #include <unistd.h>
+#include <signal.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <ctype.h>
@@ -28,6 +29,7 @@
 #include "message.h"
 
 #define PORT 20000
+#define OH_PORT 21000
 #define NOX_PORT 1304
 
 using namespace std;
@@ -167,7 +169,49 @@ int main(int argc, char *argv[])
 	close(sock);
 	printf("-------------------------------------------------\n");
 
+	/* Create output_handler socket */
+	int iperf_pid = -1;
+	int oh_sock;
+	struct sockaddr_in *oh_in = (struct sockaddr_in *)malloc(sizeof(struct sockaddr_in *));
+	oh_in->sin_family = AF_INET;
+	tmpres = inet_pton(AF_INET, ip, (void *)(&(oh_in->sin_addr.s_addr)));
+	if( tmpres < 0)  
+	{
+		perror("Can't set oh_in->sin_addr.s_addr");
+		exit(1);
+	}
+	else if(tmpres == 0)
+	{
+		fprintf(stderr, "%s is not a valid IP address\n", ip);
+		exit(1);
+	}
+	oh_in->sin_port = htons(OH_PORT);
+
+
 	while(1) {
+
+		printf("Press <enter> to start iperf server: ");
+		getchar();
+		/* Connect to output_handler */
+		if((oh_sock = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP)) < 0){
+			perror("Can't create TCP socket to OH");
+			exit(1);
+		}
+		if(connect(oh_sock, (struct sockaddr *)oh_in, sizeof(struct sockaddr)) < 0){
+			perror("Could not connect to OH");
+			exit(1);
+		}
+
+		/* Spawn iperf server */
+		iperf_pid = fork();
+		if(iperf_pid == 0) {
+			// Child process - iperf server
+			printf("Starting iperf UDP server\n");
+			dup2(oh_sock, 1);
+			execl("/usr/bin/iperf", "/usr/bin/iperf", "-i", "2", "-u", "-s", (char*)0);
+			return 0;
+		}
+
 		/* Get active and passive slave names */
 		if ((ret = ioctl(skfd, SIOCBONDHOOLOCKGETACTIVE, &ifr)) < 0) {
 			printf("BondGetActive ioctl call failed : %d\n", ret);
@@ -189,6 +233,8 @@ int main(int argc, char *argv[])
 		char a = getchar();
 		if(a == 'q') {
 			close(nox_sock);
+			kill(iperf_pid, 9);
+			close(oh_sock);
 			printf("Smooth exit\n");
 			return 0;
 		}
@@ -337,6 +383,13 @@ int main(int argc, char *argv[])
 		close(sock);
 
 		printf("-------------------------------------------------\n");
+
+		/* Get input from user and kill iperf server */
+		printf("Press <enter> to kill iperf server: ");
+		getchar();
+		kill(iperf_pid, 9);
+		/* Close connection to output_handler */
+		close(oh_sock);
 	}
 
 	return 0;
