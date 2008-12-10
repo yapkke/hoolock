@@ -2,6 +2,7 @@
  
 use strict;
 use POSIX qw(ceil floor);
+use Statistics::Descriptive;
 
 my @exps = ("simple", "hoolock", "hard");
 my @topos = ("lossless", "lossy");
@@ -17,12 +18,14 @@ foreach $topo (@topos) {
 	foreach $bw (@bws) {
 		print "Bandwidth : $bw kbits/s\n";
 		foreach $exp (@exps) {
-			print "$exp : ";
+			print "$exp : \n";
 			my (@pkt_loss, @xput, @out_of_order);
+			my $xstats = Statistics::Descriptive::Full->new();
+			my $lstats = Statistics::Descriptive::Full->new();
+			my $ostats = Statistics::Descriptive::Full->new();
 			for (my $i = 0; $i < $iters; $i++) {
 				$path = "$path_base/$exp/$topo/$bw/out-$i.txt";
 				if(!open(INFILE, "<$path")) {
-					print "\n";
 					last;
 				}
 				my @lines = <INFILE>;
@@ -49,13 +52,12 @@ foreach $topo (@topos) {
 				push(@xput, $words[$#words-1]*1470*8.0/(20*1000));
 				push(@pkt_loss, substr($words[$#words-2], 0, -1));
 			}
-			my @sxput = sort {$a <=> $b} @xput;
-			my @sloss = sort {$a <=> $b} @pkt_loss;
-			my @sorder = sort {$a <=> $b} @out_of_order;
-			print $sxput[$#sxput/2] . " " . $sloss[$#sloss/2] . " " . $sorder[$#sorder/2] . "\n";
-			print "@xput\n";
-			print "@pkt_loss\n";
-			print "@out_of_order\n";
+			$xstats->add_data(@xput);
+			print sprintf("%.2f",$xstats->mean()) . " +/- " . sprintf("%.2f",$xstats->standard_deviation()) . " : @xput\n";
+			$lstats->add_data(@pkt_loss);
+			print sprintf("%.2f",$lstats->mean()) . " +/- " . sprintf("%.2f", $lstats->standard_deviation()) . " : @pkt_loss\n";
+			$ostats->add_data(@out_of_order);
+			print sprintf("%.2f",$ostats->mean()) . " +/- " . sprintf("%.2f", $ostats->standard_deviation()) . " : @out_of_order\n";
 		}
 		print "\n";
 	}
