@@ -1,0 +1,354 @@
+% 17 11:36:11 EDT 1999
+% RFC references moved to rfc.bib
+%
+
+%
+% PROCEEDINGS - shared definitions for conferences, journals,
+%               and so on.  If you're creating an entry for a
+%               common conference (sigcomm, mobicomm, sosp, etc.)
+%               please define a proceedings for it at the end of
+%               this file (and make sure one isn't already defined).
+%
+
+
+% Journal names don't really crossref well.  Define common ones here:
+@string{JSAC="IEEE Journal on Selected Areas in Communications (J-SAC)"}
+%@string{JSAC="IEEE JSAC"}
+@string{JACM="Journal of the {ACM}"}
+@string{CCR="{ACM} Computer Communications Review"}
+@string{IEEEPROC="{Proc. of the IEEE}"}
+@string{IEEECOMM="{IEEE Communications Magazine}"}
+@string{IEEECOMP="{IEEE Computer}"}
+@string{IEEEPERS="{IEEE} Personal Communications"}
+@string{IEEENET="{IEEE Network}"}
+@string{IEEETOIT="{IEEE} Transactions on Information Theory"}
+@string{MICRO={"IEEE Micro"}}
+@string{CACM="{Communications of the ACM}"}
+@string{TOC="{IEEE Transactions on Communications}"}
+@string{TON="{IEEE/ACM Transactions on Networking}"}
+@string{TOCS="{ACM Transactions on Computer Systems}"}
+@string{TOMEDIA="{IEEE Transactions on Multimedia}"}
+@string{OSREVIEW="{Operating Systems Review}"}
+@string{MCCR="{Mobile Computing and Communications Review}"}
+@string{CNISDN="{Computer Networks and ISDN Systems}"}
+
+% Other random things that show up all the time:
+@string{IETFSHORT = "IETF"} 
+@string{MIT = "{Massachusetts Institute of Technology}"}
+
+%%
+% Entries
+%%
+
+
+@Article{DiOoWi92,
+  author =	 {Whitfield Diffie and Paul C. van Oorschot and
+		  Michael J. Wiener},
+  title =	 "{Authentication and Authenticated Key Exchanges}",
+  journal =	 {Designs, Codes and Cryptography},
+  year =	 1992,
+  pages =	 {107--125},
+  publisher =	 {Kluwer Academic Publishers, The Netherlands},
+  keywords =	 {diffie-hellman key exchange, Station-to-Station
+		  protocol (STS), perfect forward secrecy (PFS),
+		  asymmetric},
+  online = 	 {http://www3.sympatico.ca/wienerfamily/Michael/MichaelPapers/STS.pdf},
+  offline-ibm =	 {LIB: Security 4.25},
+  added-by =	 {sti},
+  annote = 	 {Defines Station-to-Station protocol
+                  (STS). Introduces unknown key-share (more
+                  intuitively, identity-mismatch) attack (but fails
+                  for the same kind of attack with certificate
+                  rebinding)}
+}
+
+@TechReport{FrKaKo96,
+  author =	 {Alan O. Freier and Philip Kariton and Paul C. Kocher},
+  title =	 "{The {SSL} Protocol: Version 3.0}",
+  type =	 {Internet Draft},
+  institution =	 {Netscape Communications},
+  year =	 1996,
+  offline-ibm =	 {LIB: Security 6.8c},
+  annote =	 {Replaced by TLS~\cite{TLS1.0}},
+  added-by =	 {aso}
+}
+
+@inproceedings{abadi:cidr2005,
+   author =       "Daniel J Abadi and Yanif Ahmad and Magdalena Balazinska and Ugur Cetintemel and Mitch Cherniack and Jeong-Hyon Hwang and Wolfgang Lindner and Anurag S Maskey and Alexander Rasin and Esther Ryvkina and Nesime Tatbul and Ying Xing and Stan Zdonik",
+   title =        "The Design of the Borealis Stream Processing Engine",
+   booktitle =    {Proceedings of Second Biennial Conference on Innovative Data Systems Research (CIDR 2005)},
+   year =         2005,
+   month =        {January},
+   address =      {Asilomar, CA}
+}
+
+@inproceedings{selva:icdcn,
+   author =       "{Ka. Selvaradjou, B. Goutham, and C. Siva Ram Murthy}",
+   title =        "{Exploiting Resource-Rich Actors for Bridging Network Partitions in Wireless Sensor and Actor Networks}",
+   booktitle =    {Proceedings of International Conference on Distributed Computing and Networking (ICDCN)},
+   year =         2008,
+   month =        {January}
+}
+
+@misc{ns2,
+  key = "ns-2",
+  title = "{The Network Simulator NS-2}",
+  howpublished = "{Available:~http://www.isi.edu/nsnam/ns/}",
+}
+
+@article{ akyildiz04wireless,
+  author = "I. Akyildiz and I. Kasimoglu",
+  title = "{Wireless Sensor and Actor Networks: Research Challenges}",
+  journal = "Ad Hoc Networks",
+  volume = "2",
+  number = "4",
+  pages = {351--367},
+  text = "I. F. Akyildiz and I. H. Kasimoglu. Wireless sensor and actor networks:
+    Research challenges. Ad Hoc Networks Journal (Elsevier), 2(4):351--367,
+    October 2004.",
+  year = {2004}
+}
+
+@incollection{ johnson96dynamic,
+    author = "David B Johnson and David A Maltz",
+    title = "{Dynamic Source Routing in Ad Hoc Wireless Networks}",
+    booktitle = "Mobile Computing",
+    volume = "353",
+    publisher = "Kluwer Academic Publishers",
+    year = "1996",
+}
+
+@inproceedings{pimrc04,
+  author    = "{Wen~Hu} and {Sanjay~Jha} and {Nirupama~Bulusu}",
+  title     = "{A Communication Paradigm for Hybrid Sensor/Actuator Networks}",
+  booktitle = "{Proceedings of the 15th IEEE International Symposium on Personal, Indoor and Mobile Radio Communications (PIMRC)}",
+  month =  {September},
+  year      = {2004},
+  pages     = {47-59}
+}
+@inproceedings{DAaS,
+  author    = "{J.~Cho} and {J.~Lee} and {T.~Kwon} and {Y.~Choi}",
+  title     = "{Directional Antenna at Sink (DAaS) to Prolong Network Lifetime in Wireless Sensor Networks}",
+  booktitle = "{Proceedings of the 12th European Wireless Conference}",
+  pages = {1-5},
+  month =  {April},
+  year      = {2006}  
+}
+@inproceedings{siphon,
+  author    = "{C.~Y.~Wan} and {S.~B.~Eisenman} and {A.~T.~Campbell} and {J.~Crowcroft}",
+  title     = "{Siphon: Overload Traffic Management using Multi-Radio Virtual Sinks}",
+  booktitle = "{Proceedings of the 3rd ACM Conference on Embedded Networked Sensor Systems}",
+  month =  {November},
+  year      = {2005},
+  pages     = {116-129}
+}
+@inproceedings{Hou, 
+title = "{BeamStar: A New Low-cost Data Routing Protocol for Wireless Sensor Networks}", 
+author = "{Shiwen Mao} and
+          {Y.~T.~Hou}", 
+booktitle = "{Proceedings of IEEE GLOBECOM}", 
+volume = {5},
+year = {2004},
+pages = {2919-2924}
+}
+
+@inproceedings{ICDCN,
+  author    = "{Ka.~Selvaradjou} and
+               {C.~Siva Ram Murthy}",
+  title     = "{On Maximizing the Residual Energy of Actors in Wireless Sensor and Actor Networks}",
+  booktitle = "{Proceedings of 8th International Conference on Distributed Computing and Networking (ICDCN)}",
+  year      = {2006},
+  pages     = {227-238}
+ }
+
+@ARTICLE{LP,
+  title	    = "{On the complexity of Linear Programming}",
+	author={C. C. Gonzaga},
+	journal={Resenhas - IME-USP Journal},
+	year={1995},
+	volume={2},
+	number={2},
+	pages={197-207}
+}
+
+@article{1008846,
+ author = {Yu-Ju Kuo and Hans D. Mittelmann},
+ title = "{Interior Point Methods for Second-Order Cone Programming and OR Applications}",
+ journal = {Computational Optimization and Applications},
+ volume = {28},
+ number = {3},
+ year = {2004},
+ issn = {0926-6003},
+ pages = {255--285},
+ doi = {http://dx.doi.org/10.1023/B:COAP.0000033964.95511.23},
+ publisher = {Kluwer Academic Publishers},
+ address = {Norwell, MA, USA},
+ }
+
+@article{374553,
+ author = {Charles E. Perkins and Elizabeth M. Royer},
+ title = "{The Ad Hoc On-demand Distance-Vector Protocol}",
+ journal = {Ad Hoc Networking},
+ year = {2001},
+ isbn = {0-201-30976-9},
+ pages = {173--219},
+ publisher = {Addison-Wesley Longman Publishing Co., Inc.},
+ address = {Boston, MA, USA},
+ }
+
+@inproceedings{749281,
+title= "{Ad-hoc On-demand Distance Vector Routing}",
+author={Perkins, C.E. and Royer, E.M.},
+booktitle={Proceedings of Second IEEE Workshop on Mobile Computing Systems and Applications (WMCSA)},
+year={1999},
+volume={},
+number={},
+pages={90-100},
+keywords={mobile computing, protocols, telecommunication network routingAODV, Ad-hoc On Demand Distance Vector Routing, ad-hoc network, ad-hoc on-demand distance vector routing, basic distance vector routing mechanisms, broken links, centralized access point, cooperative engagement, dynamic self starting network, evaluation methodology, loop-free routes, mobile host, mobile nodes, periodic advertisements, routing algorithm, specialized router},
+doi={10.1109/MCSA.1999.749281},
+ISSN={}, 
+}
+
+
+@inproceedings{ perkins97adhoc,
+  author = "C. Perkins",
+  title = "{Ad-hoc On-demand Distance Vector Routing}",
+  text = "C. E. Perkins, Ad-hoc on-demand distance vector routing, in MILCOM '97
+    panel on Ad Hoc Networks, Nov. 1997.",
+  booktitle = "Proceedings of MILCOM panel on Ad Hoc Networks",
+  month = {November},
+  year = "1997",
+}
+
+@article{774787,
+ author = {Jeremy Elson and Kay R\"{o}mer},
+ title = "{Wireless Sensor Networks: a New Regime for Time Synchronization}",
+ journal = {SIGCOMM Computer Communication Review},
+ volume = {33},
+ number = {1},
+ year = {2003},
+ issn = {0146-4833},
+ pages = {149--154},
+ doi = {http://doi.acm.org/10.1145/774763.774787},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+ }
+
+@misc{ petriu00sensorbased,
+  author = "E. Petriu and N. Georganas and D. Petriu and D. Makrakis and V. Groza",
+  title = "{Sensor-based Information Appliances}",
+  text = "E.M. Petriu, N.D. Georganas, D.C. Petriu, D. Makrakis, and V.Z. Groza,
+    Sensor-based information appliances, IEEE Instrum. Meas. Mag., vol. 3, pp.
+    31-35, Dec. 2000.",
+  year = "2000"
+}
+
+@inproceedings{371720,
+ author = {Alberto Cerpa and Jeremy Elson and Michael Hamilton and Jerry Zhao and Deborah Estrin and Lewis Girod},
+ title = "{Habitat Monitoring: Application Driver for Wireless Communications Technology}",
+ booktitle = {Proceedings of SIGCOMM Workshop on Data Communication in Latin America and the Caribbean},
+ year = {2001},
+ isbn = {1-58113-354-5},
+ pages = {20--41},
+ location = {San Jose, Costa Rica},
+ doi = {http://doi.acm.org/10.1145/371626.371720}
+ }
+
+@article{990704,
+ author = {Robert Szewczyk and Eric Osterweil and Joseph Polastre and Michael Hamilton and Alan Mainwaring and Deborah Estrin},
+ title = "{Habitat Monitoring with Sensor Networks}",
+ journal = {Communications of the ACM},
+ volume = {47},
+ number = {6},
+ year = {2004},
+ issn = {0001-0782},
+ pages = {34--40},
+ doi = {http://doi.acm.org/10.1145/990680.990704},
+ publisher = {ACM},
+ address = {New York, NY, USA},
+ }
+
+@inproceedings{1143775,
+ author = {Azzedine Boukerche and Kaouther Abrougui},
+ title = "{An Efficient Leader Election Protocol for Mobile Networks}",
+ booktitle = {Proceedings of ACM International Conference on Wireless  Communications and Mobile Computing (IWCMC)},
+ year = {2006},
+ isbn = {1-59593-306-9},
+ pages = {1129--1134},
+ location = {Vancouver, British Columbia, Canada},
+ doi = {http://doi.acm.org/10.1145/1143549.1143775}
+ }
+
+@inproceedings{345871,
+ author = {Navneet Malpani and Jennifer L. Welch and Nitin Vaidya},
+ title = "{Leader Election Algorithms for Mobile Ad hoc Networks}",
+ booktitle = {Proceedings of the 4th ACM International Workshop on Discrete Algorithms and Methods for Mobile Computing and Communications},
+ year = {2000},
+ isbn = {1-58113-301-4},
+ pages = {96--103},
+ location = {Boston, Massachusetts, United States},
+ doi = {http://doi.acm.org/10.1145/345848.345871},
+ }
+
+@inproceedings{parvathi-leader,
+ author = {Pradeep Parvathipuram and Vijay Kumar and Gi Chul Yang},
+ title = "{An Efficient Leader Election Algorithm for Mobile Ad Hoc Networks}",
+ booktitle = {Proceedings of International Conference on Distributed Computing and Internet Technology (ICDCIT)},
+ year = {2004},
+ isbn = {3540240756},
+ pages = {32--41}
+ }
+
+@inproceedings{ cherkassky94shortest-1,
+    author = "Boris V. Cherkassky and Andrew V. Goldberg and Tomasz Radzik",
+    title = "{Shortest Paths Algorithms: Theory and Experimental Evaluation}",
+    booktitle = "Proceedings of {ACM}-{SIAM} Symposium on Discrete Algorithms",
+    year = "1994"
+}
+
+@inproceedings{cherkassky94shortest,
+ author = {Boris V. Cherkassky and Andrew V. Goldberg and Tomasz Radzik},
+ title = "{Shortest Paths Algorithms: Theory and Experimental Evaluation}",
+ booktitle = {Proceedings of the Fifth Annual ACM-SIAM Symposium on Discrete Algorithms},
+ year = {1994},
+ isbn = {0-89871-329-3},
+ pages = {516--525},
+ location = {Arlington, Virginia, United States}
+ }
+
+@inproceedings{ tsuchiya99,
+    author = "T. Tsuchiya",
+    title = "{A Convergence Analysis of the Scaling-Invariant Primal-Dual Path-following Algorithms for Second-order Cone Programming}",
+    booktitle = "Proceedings of Optimization Methods and Software, vols. 11/12",
+    year = "1999",
+    pages = {141--182}
+}
+
+@article{58863,
+ author = {Anthony Brook and David Kendrick and Alexander Meeraus},
+ title = "{GAMS, a User's Guide}",
+ journal = {SIGNUM Newsletter},
+ volume = {23},
+ number = {3-4},
+ year = {1988},
+ issn = {0163-5778},
+ pages = {10--11},
+ doi = {http://doi.acm.org/10.1145/58859.58863}
+ }
+
+@misc{ brooke92gams-1,
+  author = "{A. Brooke and D. Kendrick and A. Meeraus}",
+  title = "{GAMS: A User's Guide}",
+  text = "A. Brooke, D. Kendrick, and A. Meeraus. GAMS: A User's Guide, Release 2.25.
+    The Scientific Press, 1992.",
+  howpublished = "Release 2.25, The Scientific Press",
+  year = "1992"
+}
+
+@book{brooke92gams,
+author = "{A.~Brooke} and {D.~Kendrick} and {A.~Meeraus} and {Ramesh Raman} and {Richard E. Rosenthal}",
+title = "{GAMS: A User's Guide and Tutorial}",
+publisher= "{GAMS Development Corporation}",
+year="1998"
+}
+

@@ -1,0 +1,50 @@
+
+%
+%  $Description: Author guidelines and sample document in LaTeX 2.09$ 
+%
+%  $Author: ienne $
+%  $Date: 1995/09/15 15:20:59 $
+%  $Revision: 1.4 $
+%
+
+\documentclass[times, conference, 10pt,twocolumn]{IEEEtran} 
+\usepackage{latex8}
+\usepackage{times}
+\usepackage{algorithm,algorithmic}
+\usepackage{verbatim}
+\usepackage[pdftex]{graphicx}
+\usepackage[none]{hyphenat}
+\usepackage[small,bf]{caption}
+%\documentstyle[times,art10,twocolumn,latex8]{article}
+
+%------------------------------------------------------------------------- 
+% take the % away on next line to produce the final camera-ready version 
+\pagestyle{empty}
+
+\newcommand{\sys}{Hoolock}
+%------------------------------------------------------------------------- 
+\begin{document}
+
+\title{Hoolock : Seemless Mobility in OpenFlow-enabled Wireless Access Networks}
+
+\author{Nikhil Handigol, Wei Wei\\
+Stanford University\\
+}
+
+\maketitle
+\thispagestyle{empty}
+
+\input{intro}
+\input{design}
+\input{prot}
+\input{impl}
+\input{eval}
+\input{concl}
+
+%------------------------------------------------------------------------- 
+%\nocite{ex1,ex2}
+%\bibliographystyle{latex8}
+\bibliographystyle{ieeetr}
+\bibliography{ref}
+\end{document}
+
