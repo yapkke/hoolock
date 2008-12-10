@@ -85,11 +85,6 @@ int main(int argc, char *argv[])
 	ifr.ifr_data = (void *) malloc(sizeof(struct ifslave));
 	strcpy(ifr.ifr_name, bond_name);
 
-	/* misc variables */
-	/*int msg_size = sizeof(struct Hoolock_msg) + 1;
-	struct Hoolock_msg *hmsg;
-	int bytes_in, bytes_out;*/
-
 	/* plumb socket variables */
 	char act_slave[IFNAMSIZ];
 	char buffer[256], plumb_cmd[50];
@@ -141,9 +136,6 @@ int main(int argc, char *argv[])
 	cout << "Received from plumber : " << buffer << endl;
 	close(sock);
 	printf("-------------------------------------------------\n");
-
-	/* start background ping */
-	system("ping -q -i 0.2 192.168.0.2 &");
 
 	/* Create output_handler socket */
 	int iperf_pid = -1;
