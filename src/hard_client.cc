@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
 	strcpy(ifr.ifr_name, bond_name);
 
 	/* plumb socket variables */
-	char act_slave[IFNAMSIZ], pas_slave[IFNAMSIZ];
+	char act_slave[IFNAMSIZ]; //pas_slave[IFNAMSIZ];
 	char buffer[256], plumb_cmd[50];
 	char ip[] = "10.0.2.2";
 
@@ -137,8 +137,7 @@ int main(int argc, char *argv[])
 	close(sock);
 	printf("-------------------------------------------------\n");
 
-	/* start background ping */
-	system("ping -q -i 0.2 192.168.0.2 &");
+	sleep(2);
 
 	/* Create output_handler socket */
 	int iperf_pid = -1;
@@ -158,8 +157,12 @@ int main(int argc, char *argv[])
 	}
 	oh_in->sin_port = htons(OH_PORT);
 
+	char act_ch, pas_ch;
+	act_ch = act_slave[3];
 
 	while(1) {
+
+		pas_ch = '1' + '0' - act_ch;
 
 		printf("Press <enter> to start iperf server: ");
 		getchar();
@@ -183,23 +186,6 @@ int main(int argc, char *argv[])
 			return 0;
 		}
 
-		/* Get active and passive slave names */
-		if ((ret = ioctl(skfd, SIOCBONDHOOLOCKGETACTIVE, &ifr)) < 0) {
-			printf("BondGetActive ioctl call failed : %d\n", ret);
-			return -1;
-		}
-		strcpy(act_slave, ((struct ifslave *)ifr.ifr_data)->slave_name);
-		printf("Active slave : %s\n", act_slave);
-
-		if ((ret = ioctl(skfd, SIOCBONDHOOLOCKGETPASSIVE, &ifr)) < 0) {
-			printf("BondGetPassive ioctl call failed : %d\n", ret);
-			return -1;
-		}
-		strcpy(pas_slave, ((struct ifslave *)ifr.ifr_data)->slave_name);
-		printf("Passive slave : %s\n", pas_slave);
-		printf("-------------------------------------------------\n");
-
-
 		printf("Press <enter> to switch (or 'q' to quit): ");
 		char a = getchar();
 		if(a == 'q') {
@@ -221,7 +207,7 @@ int main(int argc, char *argv[])
 			exit(1);
 		}
 		strcpy(plumb_cmd, "break x");
-		plumb_cmd[6] = act_slave[3];
+		plumb_cmd[6] = act_ch;
 		cout << "Sending to plumber : " << plumb_cmd << endl;
 		tmpres = write(sock, plumb_cmd, strlen(plumb_cmd));
 		if (tmpres < 0) 
@@ -236,7 +222,7 @@ int main(int argc, char *argv[])
 		printf("-------------------------------------------------\n");
 
 		/* Artificial sleep - 150 ms */
-		usleep(150000);
+		usleep(150 * 1000);
 
 		/* Make */
 
@@ -250,7 +236,7 @@ int main(int argc, char *argv[])
 			exit(1);
 		}
 		strcpy(plumb_cmd, "make x");
-		plumb_cmd[5] = pas_slave[3];
+		plumb_cmd[5] = pas_ch;
 		cout << "Sending to plumber : " << plumb_cmd << endl;
 		tmpres = write(sock, plumb_cmd, strlen(plumb_cmd));
 		if (tmpres < 0) 
@@ -261,6 +247,10 @@ int main(int argc, char *argv[])
 			perror("ERROR reading from socket");
 		cout << "Received from plumber : " << buffer << endl;
 		close(sock);
+		act_ch = '1' + '0' - act_ch;
+
+		/* start background ping */
+		system("ping -q -c 3 192.168.0.2 &");
 
 		/* Get input from user and kill iperf server */
 		printf("Press <enter> to kill iperf server: ");
