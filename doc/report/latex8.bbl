@@ -1,0 +1,98 @@
+\begin{thebibliography}{10}
+
+\bibitem{akyildiz04wireless}
+I.~Akyildiz and I.~Kasimoglu, ``{Wireless Sensor and Actor Networks: Research
+  Challenges},'' {\em Ad Hoc Networks}, vol.~2, no.~4, pp.~351--367, 2004.
+
+\bibitem{petriu00sensorbased}
+E.~Petriu, N.~Georganas, D.~Petriu, D.~Makrakis, and V.~Groza, ``{Sensor-based
+  Information Appliances},'' 2000.
+
+\bibitem{371720}
+A.~Cerpa, J.~Elson, M.~Hamilton, J.~Zhao, D.~Estrin, and L.~Girod, ``{Habitat
+  Monitoring: Application Driver for Wireless Communications Technology},'' in
+  {\em Proceedings of SIGCOMM Workshop on Data Communication in Latin America
+  and the Caribbean}, pp.~20--41, 2001.
+
+\bibitem{990704}
+R.~Szewczyk, E.~Osterweil, J.~Polastre, M.~Hamilton, A.~Mainwaring, and
+  D.~Estrin, ``{Habitat Monitoring with Sensor Networks},'' {\em Communications
+  of the ACM}, vol.~47, no.~6, pp.~34--40, 2004.
+
+\bibitem{selva:icdcn}
+{Ka. Selvaradjou, B. Goutham, and C. Siva Ram Murthy}, ``{Exploiting
+  Resource-Rich Actors for Bridging Network Partitions in Wireless Sensor and
+  Actor Networks},'' in {\em Proceedings of International Conference on
+  Distributed Computing and Networking (ICDCN)}, January 2008.
+
+\bibitem{johnson96dynamic}
+D.~B. Johnson and D.~A. Maltz, ``{Dynamic Source Routing in Ad Hoc Wireless
+  Networks},'' in {\em Mobile Computing}, vol.~353, Kluwer Academic Publishers,
+  1996.
+
+\bibitem{374553}
+C.~E. Perkins and E.~M. Royer, ``{The Ad Hoc On-demand Distance-Vector
+  Protocol},'' {\em Ad Hoc Networking}, pp.~173--219, 2001.
+
+\bibitem{1008846}
+Y.-J. Kuo and H.~D. Mittelmann, ``{Interior Point Methods for Second-Order Cone
+  Programming and OR Applications},'' {\em Computational Optimization and
+  Applications}, vol.~28, no.~3, pp.~255--285, 2004.
+
+\bibitem{tsuchiya99}
+T.~Tsuchiya, ``{A Convergence Analysis of the Scaling-Invariant Primal-Dual
+  Path-following Algorithms for Second-order Cone Programming},'' in {\em
+  Proceedings of Optimization Methods and Software, vols. 11/12}, pp.~141--182,
+  1999.
+
+\bibitem{LP}
+C.~C. Gonzaga, ``{On the complexity of Linear Programming},'' {\em Resenhas -
+  IME-USP Journal}, vol.~2, no.~2, pp.~197--207, 1995.
+
+\bibitem{cherkassky94shortest}
+B.~V. Cherkassky, A.~V. Goldberg, and T.~Radzik, ``{Shortest Paths Algorithms:
+  Theory and Experimental Evaluation},'' in {\em Proceedings of the Fifth
+  Annual ACM-SIAM Symposium on Discrete Algorithms}, pp.~516--525, 1994.
+
+\bibitem{1143775}
+A.~Boukerche and K.~Abrougui, ``{An Efficient Leader Election Protocol for
+  Mobile Networks},'' in {\em Proceedings of ACM International Conference on
+  Wireless Communications and Mobile Computing (IWCMC)}, pp.~1129--1134, 2006.
+
+\bibitem{ns2}
+``{The Network Simulator NS-2}.'' {Available:~http://www.isi.edu/nsnam/ns/}.
+
+\bibitem{58863}
+A.~Brook, D.~Kendrick, and A.~Meeraus, ``{GAMS, a User's Guide},'' {\em SIGNUM
+  Newsletter}, vol.~23, no.~3-4, pp.~10--11, 1988.
+
+\bibitem{pimrc04}
+{Wen~Hu}, {Sanjay~Jha}, and {Nirupama~Bulusu}, ``{A Communication Paradigm for
+  Hybrid Sensor/Actuator Networks},'' in {\em {Proceedings of the 15th IEEE
+  International Symposium on Personal, Indoor and Mobile Radio Communications
+  (PIMRC)}}, pp.~47--59, September 2004.
+
+\bibitem{siphon}
+{C.~Y.~Wan}, {S.~B.~Eisenman}, {A.~T.~Campbell}, and {J.~Crowcroft}, ``{Siphon:
+  Overload Traffic Management using Multi-Radio Virtual Sinks},'' in {\em
+  {Proceedings of the 3rd ACM Conference on Embedded Networked Sensor
+  Systems}}, pp.~116--129, November 2005.
+
+\bibitem{DAas}
+{J.~Cho}, {J.~Lee}, {T.~Kwon}, and {Y.~Choi}, ``{Directional Antenna at Sink
+  (DAaS) to Prolong Network Lifetime in Wireless Sensor Networks},'' in {\em
+  {Proceedings of the 12th European Wireless Conference}}, pp.~1--5, April
+  2006.
+
+\bibitem{Hou}
+{Shiwen Mao} and {Y.~T.~Hou}, ``{BeamStar: A New Low-cost Data Routing Protocol
+  for Wireless Sensor Networks},'' in {\em {Proceedings of IEEE GLOBECOM}},
+  vol.~5, pp.~2919--2924, 2004.
+
+\bibitem{ICDCN}
+{Ka.~Selvaradjou} and {C.~Siva Ram Murthy}, ``{On Maximizing the Residual
+  Energy of Actors in Wireless Sensor and Actor Networks},'' in {\em
+  {Proceedings of 8th International Conference on Distributed Computing and
+  Networking (ICDCN)}}, pp.~227--238, 2006.
+
+\end{thebibliography}
