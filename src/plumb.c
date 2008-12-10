@@ -23,14 +23,18 @@ int main(int argc, char *argv[])
      int sockfd, portno, clilen;
      struct sockaddr_in serv_addr, cli_addr;
      pid_t eth0_pid = -1, eth1_pid = -1;
-     int is_hard = 0;
-     if(argc < 2) {
-	     error("Usage: plumb <handover_type>");
+     int is_hard = 0, is_lossy = 0;
+     if(argc < 3) {
+	     error("Usage: plumb <conn_type> <handover_type>");
      }
      
      // Set flag for hard-handover
-     if(strncmp(argv[1], "hard", 4) == 0) {
+     if(strncmp(argv[2], "hard", 4) == 0) {
 	     is_hard = 1;
+     }
+     // Set flag for link loss
+     if(strncmp(argv[1], "lossy", 5) == 0) {
+	     is_lossy = 1;
      }
 
      sockfd = socket(AF_INET, SOCK_STREAM, 0);
@@ -78,8 +82,12 @@ int main(int argc, char *argv[])
 				     if(eth0_pid == 0) {
 					     // child process 
 					     printf("Make: mobile0SW <====> openflow0SW\n");
-					     //execl("/usr/bin/dpipe", "/usr/bin/dpipe", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlmobile0SW", "=", "wirefilter", "=", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlopenflow0SW", (char*)0);
-					     execl("/usr/bin/dpipe", "/usr/bin/dpipe", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlmobile0SW", "=", "wirefilter", "-l", "10", "=", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlopenflow0SW", (char*)0);
+					     if(is_lossy) {
+						     execl("/usr/bin/dpipe", "/usr/bin/dpipe", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlmobile0SW", "=", "wirefilter", "-l", "10", "=", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlopenflow0SW", (char*)0);
+					     }
+					     else {
+						     execl("/usr/bin/dpipe", "/usr/bin/dpipe", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlmobile0SW", "=", "wirefilter", "=", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlopenflow0SW", (char*)0);
+					     }
 					     return;
 				     }
 			     }
@@ -91,13 +99,21 @@ int main(int argc, char *argv[])
 					     // child process
 					     if(is_hard) {
 						     printf("Make: mobile0SW <====> openflow1SW\n");
-						     //execl("/usr/bin/dpipe", "/usr/bin/dpipe", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlmobile0SW", "=", "wirefilter", "=", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlopenflow1SW", (char*)0);
-						     execl("/usr/bin/dpipe", "/usr/bin/dpipe", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlmobile0SW", "=", "wirefilter", "-l", "10", "=", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlopenflow1SW", (char*)0);
+						     if(is_lossy) {
+							     execl("/usr/bin/dpipe", "/usr/bin/dpipe", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlmobile0SW", "=", "wirefilter", "-l", "10", "=", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlopenflow1SW", (char*)0);
+						     }
+						     else {
+							     execl("/usr/bin/dpipe", "/usr/bin/dpipe", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlmobile0SW", "=", "wirefilter", "=", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlopenflow1SW", (char*)0);
+						     }
 					     }
 					     else {
 						     printf("Make: mobile1SW <====> openflow1SW\n");
-						     //execl("/usr/bin/dpipe", "/usr/bin/dpipe", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlmobile1SW", "=", "wirefilter", "=", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlopenflow1SW", (char*)0);
-						     execl("/usr/bin/dpipe", "/usr/bin/dpipe", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlmobile1SW", "=", "wirefilter", "-l", "10", "=", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlopenflow1SW", (char*)0);
+						     if(is_lossy) {
+							     execl("/usr/bin/dpipe", "/usr/bin/dpipe", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlmobile1SW", "=", "wirefilter", "-l", "10", "=", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlopenflow1SW", (char*)0);
+						     }
+						     else {
+							     execl("/usr/bin/dpipe", "/usr/bin/dpipe", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlmobile1SW", "=", "wirefilter", "=", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlopenflow1SW", (char*)0);
+						     }
 					     }
 					     return;
 				     }
