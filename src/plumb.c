@@ -78,7 +78,8 @@ int main(int argc, char *argv[])
 				     if(eth0_pid == 0) {
 					     // child process 
 					     printf("Make: mobile0SW <====> openflow0SW\n");
-					     execl("/usr/bin/dpipe", "/usr/bin/dpipe", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlmobile0SW", "=", "wirefilter", "=", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlopenflow0SW", (char*)0);
+					     //execl("/usr/bin/dpipe", "/usr/bin/dpipe", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlmobile0SW", "=", "wirefilter", "=", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlopenflow0SW", (char*)0);
+					     execl("/usr/bin/dpipe", "/usr/bin/dpipe", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlmobile0SW", "=", "wirefilter", "-l", "10", "=", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlopenflow0SW", (char*)0);
 					     return;
 				     }
 			     }
@@ -90,11 +91,13 @@ int main(int argc, char *argv[])
 					     // child process
 					     if(is_hard) {
 						     printf("Make: mobile0SW <====> openflow1SW\n");
-						     execl("/usr/bin/dpipe", "/usr/bin/dpipe", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlmobile0SW", "=", "wirefilter", "=", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlopenflow1SW", (char*)0);
+						     //execl("/usr/bin/dpipe", "/usr/bin/dpipe", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlmobile0SW", "=", "wirefilter", "=", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlopenflow1SW", (char*)0);
+						     execl("/usr/bin/dpipe", "/usr/bin/dpipe", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlmobile0SW", "=", "wirefilter", "-l", "10", "=", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlopenflow1SW", (char*)0);
 					     }
 					     else {
 						     printf("Make: mobile1SW <====> openflow1SW\n");
-						     execl("/usr/bin/dpipe", "/usr/bin/dpipe", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlmobile1SW", "=", "wirefilter", "=", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlopenflow1SW", (char*)0);
+						     //execl("/usr/bin/dpipe", "/usr/bin/dpipe", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlmobile1SW", "=", "wirefilter", "=", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlopenflow1SW", (char*)0);
+						     execl("/usr/bin/dpipe", "/usr/bin/dpipe", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlmobile1SW", "=", "wirefilter", "-l", "10", "=", "vde_plug", "/home/nikhilh/nox/vm/Hoolock/vde/ctlopenflow1SW", (char*)0);
 					     }
 					     return;
 				     }

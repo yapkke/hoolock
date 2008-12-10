@@ -169,9 +169,6 @@ int main(int argc, char *argv[])
 	close(sock);
 	printf("-------------------------------------------------\n");
 
-	/* start background ping */
-	system("ping -q -i 0.2 192.168.0.2 &");
-
 	/* Create output_handler socket */
 	int iperf_pid = -1;
 	int oh_sock;
@@ -313,6 +310,9 @@ int main(int argc, char *argv[])
 			return -1;
 		}
 		
+		/* background ping */
+		system("ping -q -c 3 192.168.0.2 &");
+
 		/* Artificial sleep */
 		sleep(1);
 
