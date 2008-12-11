@@ -1,0 +1,24 @@
+# adapted from Mohammad Ansari's sample test file
+=cluster None Hoolock Hard
+title=Packet loss in a lossy topology (10% loss rate)
+ylabel=Packets lost
+extraops=set size 0.8
+fontsz=12
+=nogridy
+legendx=5900
+legendy=2600
+=norotate
+xlabel=Traffic (Kbits/sec)
+=table
+50	7.89	8.80	15.40
+100	13.90	16.33	29.50
+200	32.70	30.80	56.40
+400	68.70	65.00	101.00
+800	132.40	133.70	206.40
+
+=yerrorbars
+50	1.44	1.54	1.50
+100	2.42	1.35	2.25
+200	1.87	1.62	3.35
+400	2.80	4.33	3.49
+800	3.91	4.20	4.86
