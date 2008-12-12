@@ -1,5 +1,18 @@
 \section{Performance Evaluation} \label{eval}
 
+<<<<<<< .mine
+The topologies of the networks in simulation are shown in Figure 4. It consists of three Open-Flow switches: rootopenflow, openflow0, openflow1 and two VMs: wired VM and mobile VM.
+
+The simulation uses wirefilter to conduct the handover between mobile VM and two Open-Flow switches. The mobile VM initially connects to wired VM via openflow0 and rootopenflow, then it switches from openflow0 to openflow1. The handover can also work reversely, switch from openflow1 to openflow0.
+
+In the performance evaluation, we conducted the hard handover scheme (shown in Figure 4.1) and our seamless handover scheme, the Hoolock scheme (shown in Figure 4.2) over the network shown in Figure 3. The comparative test results with lossy links and lossless links are summarized in Table 1.
+
+// figure 4.1 and 4.2 here, for hard handover and Hoolock handover
+
+With the lossless links, it is clear that the hard handover scheme has a significant data loss, approximately XXX during the switch. And with the Hoolock handover scheme, the loss is just……..Obviously, there is a great improvement in data loss.
+
+Then using the lossy links with loss rate of …, the average data loss of switch over lossy links with Hoolock scheme is….. It is the same with the inherent loss rate in the lossy links. In this case, the Hoolock scheme is a truly seamless handover scheme. From the applications perspective, it is like a continuous transmission without handover.
+=======
 \begin{figure}[h]
 \centerline{\includegraphics[width=0.7\columnwidth]{fig/lossless}}
 \caption{Hard-handover packet loss in a lossless topology.}
@@ -24,3 +37,4 @@
 \label{fig:lossy_ts}
 \end{figure}
 
+>>>>>>> .r34

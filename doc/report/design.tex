@@ -1,3 +1,21 @@
 \section{System Design}
 
-Design
+The mobile terminal in this work is a single device with two physically separate Wi-Fi radio interfaces. As Figure 1 shows, when a mobile moves away from AP-1 towards AP-2, the quality of wireless link between client and AP-1 will degrade and the quality of link between client and AP-2 will get improved.
+
+//figure 1 here
+
+Traditional mobile terminals with single radio interface suffer significant degradation in performance during hard switch. However, the configuration with two radio interfaces provides the possibility of seamless handover between APs.
+
+The four-stage protocol of Hoolock scheme is shown in Figure 2.
+
+//figure 2 here
+
+1. The client is using one radio for transmission, while using another radio monitoring the quality of the available wireless links (Signal to Noise Ratio in our work) to the surrounding APs. When the link quality degrades below a certain threshold, the client issues a REQ_Switch to the NOX controller.
+
+2. The NOX controller gets all the routing information from the flow-in events and keeps tracks of all the <flow route> pairs. After receiving REQ_Switch, the NOX instructs the client to the next available AP with ACK_Switch.
+
+3. The client only uses the current active radio interface to listen to the channel and passively collects the incoming packets. At the same time, the client sends a REQ_Break signal and a new flow-in event via the second radio interface. NOX gets the new routing information from the event, computes the common route between the new route and old route, finds out the common root Open-Flow Switch, and then modify the flow entry table in the corresponding Open-flow Switches.
+
+4. The NOX waits for a maximum flush-time (max RTT/2), let all the floating packets flushed into the client, and then issues an ACK_Break signal to the client. The client then use the previous radio to scan the available channels and then use the second radio for transmission, the handover is completed.
+
+
