@@ -10,6 +10,6 @@ set terminal postscript eps enhanced "Helvetica" 22
 set output 'lossy_timeseries.eps'
 
 
-plot "lossy_timeseries.dat" u 1:2 title 'No-handover' w linespoints ps 2 pt 6 , \
-	"lossy_timeseries.dat" u 1:3 title 'Hoolock' w linespoints ps 2 pt 2 , \
-	"lossy_timeseries.dat" u 1:4 title 'Hard' w linespoints ps 2 pt 4
+plot "lossy_timeseries.dat" u 1:2 title 'No-handover' w linespoints ps 2 pt 6 lw 3, \
+	"lossy_timeseries.dat" u 1:3 title 'Hoolock' w linespoints ps 2 pt 2 lw 3, \
+	"lossy_timeseries.dat" u 1:4 title 'Hard' w linespoints ps 2 pt 4 lw 3

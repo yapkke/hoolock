@@ -1,27 +1,38 @@
 \section{Implementation}\label{impl}
 
-// figure 3 here!
+Figure~\ref{fig:sys} shows the design of the \sys{} system. It consists of three main parts - 
+the bonding driver, the NOX module and the client program.
 
-s it is shown in Figure 3, the Hoolock scheme realizing the four-step handover protocol consists of three parts, the NOX module, client program and bonding driver.
+The bonding driver is a Linux kernel module that provides a single virtual interface for the upper 
+layers to send packets to and receive packets from. 
+It transparently manages the two physical wireless interfaces (called \emph{slaves})
+to behave as required by the protocol described earlier.
+It allows the client program to communicate to it using ioctl function calls, 
+and provides two major functions:
 
-The bonding driver takes care of the management of operations with two physically independent radio interfaces, which has two functions provided to the client program.
+\begin{itemize}
+\item {\bf make()} - Start transmitting over the new slave while 
+still listening on the old slave.
+\item {\bf break()} - Stop listening on the old slave.
+\end{itemize}
 
-// make (): perform the connection action between the active radio to a specified AP.
+In addition to the above functions, the bonding driver also intelligently avoids 
+any possible packet reordering due to rerouting of flows (especially, if the new
+route has a lower latency than the old one). It does so by buffering packets received
+on the new slave while in the make() mode and delivering them up when break() is called.
 
-// break (): break the connection between radio and AP.
+The NOX controller maintains a database of the currently active flows and their 
+corresponding routes within the network.
+It uses the Topology and Routing modules to route and switch flows.
+Upon the receipt of a flow-in event from a client in transition, it calculates the corresponding route
+to the destination, and uses it to calculate a corresponding \emph{reverse-route}. It then looks up
+its database for all the routes with the client as the destination and matches them 
+with the reverse-route to calculate the common \emph{root-switch}. It then, reroutes all the
+flows destined to the client from root-switch onwards to follow the reverse-route, while updating the 
+corresponding database entries.
 
-// Here please add the challenges when dealing with bonding driver.
+The client program is the core module that coordinates between the bonding driver and the NOX
+controller.
+It communicates with bonding driver via the ioctl() function and interacts with NOX over a TCP channel
+to execute the four-stage protocol described in Section~\ref{sec:design}.
 
-The client program acts an intermediate role between the bonding driver and NOX controller. It communicates with bonding driver via the ioctl() function and interacts with NOX through the messenger according to the four-way protocol mentioned in part II. The client program provides two functions to the NOX module.
-
-// init_make (): send out the connection requests to the NOX controller.
-
-// init_break (): send out the break requests to the NOX controller.
-
-The NOX controller has the knowledge about the entire network. From every flow-in event, the NOX collects the routing information and keeps the records of <flow route> pairs. For the new requests issued from the mobile, NOX will perform a series of actions to update the routing scheme. It firstly traverses the routing information and calculates for a reverse route, and compares the reverse route with the previous route using the <flow route> lookup table to derive a common partial route. After that, the NOX controller finds the common root Open-Flow switch and updates the flow entry table in the common root switch. It has three functions for the client program.
-
-// getAP (): need to check with the actual function names with these 3 functions!
-
-// switchRoutes ():
-
-// …some more
