@@ -1,21 +1,62 @@
 \section{System Design}
+\label{sec:design}
 
-The mobile terminal in this work is a single device with two physically separate Wi-Fi radio interfaces. As Figure 1 shows, when a mobile moves away from AP-1 towards AP-2, the quality of wireless link between client and AP-1 will degrade and the quality of link between client and AP-2 will get improved.
+Our system consists of a mobile client with two Wi-Fi radio interfaces. 
+As Figure~\ref{fig:topo} shows, when the mobile client moves away from AP-1 towards AP-2, 
+the quality of the wireless link between the client and AP-1 degrades and 
+that of the link between the client and AP-2 improves.
 
-//figure 1 here
+In order to accomplish lossless hand-over, we need a way to reroute the ongoing flows
+as the client moves from one AP to another. \sys{} achieves this using the
+NOX controller.
 
-Traditional mobile terminals with single radio interface suffer significant degradation in performance during hard switch. However, the configuration with two radio interfaces provides the possibility of seamless handover between APs.
+\begin{figure*}[htb!]
+\begin{minipage}[t]{0.45\textwidth}
+\centerline{\includegraphics[width=\columnwidth]{fig/topo}}
+\caption{OpenFlow network with mobile client.}
+\label{fig:topo}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.45\textwidth}
+\centerline{\includegraphics[width=\columnwidth]{fig/system_arch}}
+\caption{\sys{} system design.}
+\label{fig:sys}
+\end{minipage}
+\hfill
+\end{figure*}
 
-The four-stage protocol of Hoolock scheme is shown in Figure 2.
+Traditional mobile systems with a single radio interface suffer significant 
+degradation in performance during hard handoff from one AP to another. 
+However, the configuration with two radio interfaces provides the 
+possibility of seamless hand-over between APs.
 
-//figure 2 here
+\sys{} operates based on a 4-stage protocol, which is described below:
 
-1. The client is using one radio for transmission, while using another radio monitoring the quality of the available wireless links (Signal to Noise Ratio in our work) to the surrounding APs. When the link quality degrades below a certain threshold, the client issues a REQ_Switch to the NOX controller.
+\begin{itemize}
 
-2. The NOX controller gets all the routing information from the flow-in events and keeps tracks of all the <flow route> pairs. After receiving REQ_Switch, the NOX instructs the client to the next available AP with ACK_Switch.
+\item
+{\bf MAKE\_REQ} : The client is using one radio (\emph{radio-1}) for transmission, while using 
+the other radio (\emph{radio-2}) to monitor the quality of the available wireless links (eg. Signal to Noise Ratio) 
+to the surrounding APs. When the link quality degrades below a certain threshold, 
+the client issues a MAKE\_REQ to the NOX controller.
 
-3. The client only uses the current active radio interface to listen to the channel and passively collects the incoming packets. At the same time, the client sends a REQ_Break signal and a new flow-in event via the second radio interface. NOX gets the new routing information from the event, computes the common route between the new route and old route, finds out the common root Open-Flow Switch, and then modify the flow entry table in the corresponding Open-flow Switches.
+\item
+{\bf MAKE\_ACK} : The NOX controller prepares itself for a \emph{flow-in} event from the client,
+and acknowledges the same to the client using MAKE\_ACK.
 
-4. The NOX waits for a maximum flush-time (max RTT/2), let all the floating packets flushed into the client, and then issues an ACK_Break signal to the client. The client then use the previous radio to scan the available channels and then use the second radio for transmission, the handover is completed.
+\item
+{\bf BREAK\_REQ} : The client connects to the new AP using \emph{radio-2}, and 
+sends all its outgoing traffic over it. However, it continues to receive packets from the old AP
+over \emph{radio-1}. As the first outgoing packet reaches the new AP, it triggers a flow-in event
+at the NOX controller. The NOX controller, now, looks up its flow-database, computes the common root-switches
+ and reroutes all the 
+flows destined to the client to go over the new AP. Simultaneously, the client issues a BREAK\_REQ to NOX.
 
+\item
+{\bf BREAK\_ACK} : After the controller gets a BREAK\_REQ message from the client, it waits for a predefined
+\emph{flush-time} (which equals RTT/$2$), so that all the packets remaining on the old route reach the client.
+It then sends the BREAK\_ACK message to the client, upon the receipt of which, the client dissociates \emph{radio-1} from
+the old AP and uses it for background scanning.
+
+\end{itemize}
 

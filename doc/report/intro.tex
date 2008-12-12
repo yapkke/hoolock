@@ -1,5 +1,25 @@
 \section{Introduction}
 
-Introduction!
+The widespread deployment of wireless technologies such as Wi-Fi and Wi-Max 
+in today's networks has resulted in the emergence of an increasing number 
+of mobile hand-held devices such as mobile phones and PDAs capable of data 
+processing and communication. It is expected that the number of such devices 
+will only increase in the future. However, Voice-over IP (VoIP) and other 
+real-time streaming applications pose a serious challenge in achieving true 
+mobility in Wi-Fi networks. This is partially because of the high handoff 
+latencies~\cite{956990} and the resultant severe data loss experienced by mobile users 
+while moving from one access point (AP) to another. Our goal in this work 
+is to develop a system to eliminate handoff latency and data loss during 
+handoff by exploiting the potential of multiple radios in mobile devices. 
+We develop a novel hand-over scheme, {\bf \sys{}}, that achieves seamless mobility 
+without data loss. 
+%It is essentially a combination of a client-side program 
+%and a NOX-based mobility manager that realizes seamless mobile handoff over 
+%Open-Flow enabled Wi-Fi networks.
 
-Deployment of Voice-over IP (VoIP) and other real-time streaming applications has been somewhat limited in wireless LANs today, partially because of the high handoff latencies and severe transmission loss experienced by mobile users. Our goal in this work is to eliminate handoff latency and to minimize the data loss during switch by exploiting the potential of multiple radios in Wi-Fi devices. In our work, a handover scheme called Hoolock has been developed. It is essentially a NOX-based mobility manager that realizes seamless mobile handoff over Open-Flow enabled Wi-Fi networks.
+Previous works that have proposed the idea of using two radios~\cite{brik}, achieve only
+the partial goal of zero handoff latency. However, because of a lack of
+complete control over flows within the network, they fail to provide a solution to
+eliminate the loss of downstream packets during handoff. OpenFlow~\cite{openflow} provides us with 
+this capability, and we exploit it to achieve lossless hand-over.
+
