@@ -1,3 +1,11 @@
 \section{Conclusions and Future Work}\label{conc}
 
-Conclusion
+From the simulation results, we conclude that the Hoolock scheme is demonstrated to be a seamless handover scheme. It has a superior performance over hard handover scheme in terms of data loss during switch. Another advantage of Hoolock is it doesn’t need extra channel scanning time. That’s because Hoolock scans the available channels while maintaining an active connection, so when a handover is requested, it can switch immediately.
+
+Given the very limited time frame this quarter, we didn’t have the chance to make deployment, so all these improvements derived from the simulation result might cast doubts. In real situation, the wireless links are influenced by various factors, like multipath fading, Doppler shift and shadowing effects. How these issues affect the network performance will be further investigated.
+
+The NOX controller, client program and bonding driver are supposed to be running on actual devices. It will be very interesting to see how these will affect the overall computational performance as a tradeoff for the improved performance.
+
+Moreover, the network topologies applied in our simulation are relatively fundamental. The generality should be proved using more complex networks with a number of different topologies. More through measurement metrics will be applied in further studies.
+
+The Open-Flow infrastructure exhibits it power in our work. As a flow-based routing architecture, it has many advantages over the rigid, traditional networks. The major difference is its capability of managing the flow entry tables in each switch. With the embedded event-trigger model, it is very convenient to reorganize the topology of the network and make highly dynamic flows. The handover application is just the tip of iceberg, the Open-Flow and its applications have a huge potential in defining the future Internet Infrastructure standards.

@@ -1,3 +1,27 @@
 \section{Implementation}\label{impl}
 
-Implementation details
+// figure 3 here!
+
+s it is shown in Figure 3, the Hoolock scheme realizing the four-step handover protocol consists of three parts, the NOX module, client program and bonding driver.
+
+The bonding driver takes care of the management of operations with two physically independent radio interfaces, which has two functions provided to the client program.
+
+// make (): perform the connection action between the active radio to a specified AP.
+
+// break (): break the connection between radio and AP.
+
+// Here please add the challenges when dealing with bonding driver.
+
+The client program acts an intermediate role between the bonding driver and NOX controller. It communicates with bonding driver via the ioctl() function and interacts with NOX through the messenger according to the four-way protocol mentioned in part II. The client program provides two functions to the NOX module.
+
+// init_make (): send out the connection requests to the NOX controller.
+
+// init_break (): send out the break requests to the NOX controller.
+
+The NOX controller has the knowledge about the entire network. From every flow-in event, the NOX collects the routing information and keeps the records of <flow route> pairs. For the new requests issued from the mobile, NOX will perform a series of actions to update the routing scheme. It firstly traverses the routing information and calculates for a reverse route, and compares the reverse route with the previous route using the <flow route> lookup table to derive a common partial route. After that, the NOX controller finds the common root Open-Flow switch and updates the flow entry table in the common root switch. It has three functions for the client program.
+
+// getAP (): need to check with the actual function names with these 3 functions!
+
+// switchRoutes ():
+
+// …some more
