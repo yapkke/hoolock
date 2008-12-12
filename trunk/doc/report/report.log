@@ -1,4 +1,4 @@
-This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=latex 2008.10.19)  12 DEC 2008 02:04
+This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=latex 2008.10.19)  12 DEC 2008 09:26
 entering extended mode
  %&-line parsing enabled.
 **report.tex
@@ -6,157 +6,34 @@ entering extended mode
 LaTeX2e <2005/12/01>
 Babel <v3.8h> and hyphenation patterns for english, usenglishmax, dumylang, noh
 yphenation, loaded.
-(./IEEEtran.cls
-Document Class: IEEEtran 2002/11/18 revision V1.6b by Michael Shell
--- See the "IEEEtran_HOWTO" manual for usage information.
--- The source comments contain changelog notes.
-\@IEEEtrantmpdimenA=\dimen102
-\@IEEEtrantmpdimenB=\dimen103
-\@IEEEtrantmpcountA=\count79
-\@IEEEtrantmpcountB=\count80
-\@IEEEtrantmptoksA=\toks14
-LaTeX Font Info:    Try loading font information for OT1+ptm on input line 776.
-
-(/usr/share/texmf-texlive/tex/latex/psnfss/ot1ptm.fd
-File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
+(/usr/share/texmf-texlive/tex/latex/base/article.cls
+Document Class: article 2005/09/16 v1.4f Standard LaTeX document class
+(/usr/share/texmf-texlive/tex/latex/base/size10.clo
+File: size10.clo 2005/09/16 v1.4f Standard LaTeX file (size option)
 )
-** ATTENTION: Single column mode is not normally used with IEEE publications.
-\@IEEEnormalsizefontbaselineskip=\skip41
--- This is a 10 point document.
-\normalsizebaselineskip=\skip42
-\normaljot=\skip43
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <5> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1095.
-LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <5> not available
-(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1095.
-
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <7> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1095.
-LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <7> not available
-(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1095.
-
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <8> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1095.
-LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <8> not available
-(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1095.
-
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <9> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1095.
-LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <9> not available
-(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1095.
-
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <10> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1095.
-LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <10> not available
-(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1095.
-
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <11> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1095.
-LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <11> not available
-(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1095.
-
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <12> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1095.
-LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <12> not available
-(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1095.
-
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <17> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1095.
-LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <17> not available
-(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1095.
-
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <20> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1095.
-LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <20> not available
-(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1095.
-
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <24> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 1095.
-LaTeX Font Info:    Font shape `OT1/ptm/bx/it' in size <24> not available
-(Font)              Font shape `OT1/ptm/b/it' tried instead on input line 1095.
-
-\IEEEilabelindentA=\dimen104
-\IEEEilabelindentB=\dimen105
-\IEEEilabelindent=\dimen106
-\IEEEelabelindent=\dimen107
-\IEEEdlabelindent=\dimen108
-\labelindent=\dimen109
-\IEEEiednormlabelsep=\dimen110
-\IEEEiedmathlabelsep=\dimen111
-\IEEEiedtopsep=\skip44
-\c@section=\count81
-\c@subsection=\count82
-\c@subsubsection=\count83
-\c@paragraph=\count84
-\c@IEEEsubequation=\count85
-\abovecaptionskip=\skip45
-\belowcaptionskip=\skip46
-\c@figure=\count86
-\c@table=\count87
-\@IEEEeqnnumcols=\count88
-\@IEEEeqncolcnt=\count89
-\@IEEEtmpitemindent=\dimen112
-\c@biography=\count90
-\@IEEEtranrubishbin=\box26
-) (./latex8.sty
-IEEE 8.5 x 11-Inch Proceedings Style `latex8.sty'.
-\@ctmp=\skip47
-\@figindent=\skip48
-) (/usr/share/texmf-texlive/tex/latex/psnfss/times.sty
-Package: times 2005/04/12 PSNFSS-v9.2a (SPQR) 
-) (./algorithm.sty
-Package: algorithm 
-
-Document Style `algorithm' - floating environment
-(/usr/share/texmf-texlive/tex/latex/float/float.sty
-Package: float 2001/11/08 v1.3d Float enhancements (AL)
-\c@float@type=\count91
-\float@exts=\toks15
-\float@box=\box27
-\@float@everytoks=\toks16
-\@floatcapt=\box28
+\c@part=\count79
+\c@section=\count80
+\c@subsection=\count81
+\c@subsubsection=\count82
+\c@paragraph=\count83
+\c@subparagraph=\count84
+\c@figure=\count85
+\c@table=\count86
+\abovecaptionskip=\skip41
+\belowcaptionskip=\skip42
+\bibindent=\dimen102
 )
-(/usr/share/texmf-texlive/tex/latex/base/ifthen.sty
-Package: ifthen 2001/05/26 v1.1c Standard LaTeX ifthen package (DPC)
-)
-\@float@every@algorithm=\toks17
-\c@algorithm=\count92
-) (./algorithmic.sty
-Package: algorithmic 2005/07/05
-
-Document Style `algorithmic' - environment
-(/usr/share/texmf-texlive/tex/latex/tools/calc.sty
-Package: calc 2005/08/06 v4.2 Infix arithmetic (KKT,FJ)
-\calc@Acount=\count93
-\calc@Bcount=\count94
-\calc@Adimen=\dimen113
-\calc@Bdimen=\dimen114
-\calc@Askip=\skip49
-\calc@Bskip=\skip50
-LaTeX Info: Redefining \setlength on input line 75.
-LaTeX Info: Redefining \addtolength on input line 76.
-\calc@Ccount=\count95
-\calc@Cskip=\skip51
-)
-(/usr/share/texmf-texlive/tex/latex/graphics/keyval.sty
-Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
-\KV@toks@=\toks18
-)
-\c@ALC@line=\count96
-\c@ALC@rem=\count97
-\c@ALC@depth=\count98
-\ALC@tlm=\skip52
-\algorithmicindent=\skip53
-)
-(/usr/share/texmf-texlive/tex/latex/tools/verbatim.sty
-Package: verbatim 2003/08/22 v1.5q LaTeX2e package for verbatim enhancements
-\every@verbatim=\toks19
-\verbatim@line=\toks20
-\verbatim@in@stream=\read1
+(/usr/share/texmf-texlive/tex/latex/preprint/fullpage.sty
+Package: fullpage 1999/02/23 1.1 (PWD)
+\FP@margin=\skip43
 )
 (/usr/share/texmf-texlive/tex/latex/graphics/graphicx.sty
 Package: graphicx 1999/02/16 v1.0f Enhanced LaTeX Graphics (DPC,SPQR)
 
+(/usr/share/texmf-texlive/tex/latex/graphics/keyval.sty
+Package: keyval 1999/03/16 v1.13 key=value parser (DPC)
+\KV@toks@=\toks14
+)
 (/usr/share/texmf-texlive/tex/latex/graphics/graphics.sty
 Package: graphics 2006/02/20 v1.0o Standard LaTeX Graphics (DPC,SPQR)
 
@@ -170,10 +47,10 @@ Package graphics Info: Driver file: pdftex.def on input line 90.
 
 (/usr/share/texmf-texlive/tex/latex/pdftex-def/pdftex.def
 File: pdftex.def 2007/01/08 v0.04d Graphics/color for pdfTeX
-\Gread@gobject=\count99
+\Gread@gobject=\count87
 ))
-\Gin@req@height=\dimen115
-\Gin@req@width=\dimen116
+\Gin@req@height=\dimen103
+\Gin@req@width=\dimen104
 )
 (/usr/share/texmf-texlive/tex/latex/hyphenat/hyphenat.sty
 Package: hyphenat 2001/01/02 v2.3a hyphenation utilities
@@ -185,65 +62,56 @@ Package: caption 2007/01/07 v3.0k Customising captions (AR)
 
 (/usr/share/texmf-texlive/tex/latex/caption/caption3.sty
 Package: caption3 2007/01/07 v3.0k caption3 kernel (AR)
-\captionmargin=\dimen117
-\captionmarginx=\dimen118
-\captionwidth=\dimen119
-\captionindent=\dimen120
-\captionparindent=\dimen121
-\captionhangindent=\dimen122
-)
-Package caption Info: float package v1.3 (or newer) detected on input line 275.
-
-)
-
-LaTeX Warning: Unused global option(s):
-    [times].
-
-(./report.aux)
+\captionmargin=\dimen105
+\captionmarginx=\dimen106
+\captionwidth=\dimen107
+\captionindent=\dimen108
+\captionparindent=\dimen109
+\captionhangindent=\dimen110
+)) (./report.aux)
 \openout1 = `report.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 26.
-LaTeX Font Info:    ... okay on input line 26.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 26.
-LaTeX Font Info:    ... okay on input line 26.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 26.
-LaTeX Font Info:    ... okay on input line 26.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 26.
-LaTeX Font Info:    ... okay on input line 26.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 26.
-LaTeX Font Info:    ... okay on input line 26.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 26.
-LaTeX Font Info:    ... okay on input line 26.
- (/usr/share/texmf-texlive/tex/latex/ragged2e/ragged2e.sty
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 28.
+LaTeX Font Info:    ... okay on input line 28.
+
+(/usr/share/texmf-texlive/tex/latex/ragged2e/ragged2e.sty
 Package: ragged2e 2003/03/25 v2.04 ragged2e Package (MS)
 
 (/usr/share/texmf-texlive/tex/latex/everysel/everysel.sty
 Package: everysel 1999/06/08 v1.03 EverySelectfont Package (MS)
 LaTeX Info: Redefining \selectfont on input line 125.
 )
-\CenteringLeftskip=\skip54
-\RaggedLeftLeftskip=\skip55
-\RaggedRightLeftskip=\skip56
-\CenteringRightskip=\skip57
-\RaggedLeftRightskip=\skip58
-\RaggedRightRightskip=\skip59
-\CenteringParfillskip=\skip60
-\RaggedLeftParfillskip=\skip61
-\RaggedRightParfillskip=\skip62
-\JustifyingParfillskip=\skip63
-\CenteringParindent=\skip64
-\RaggedLeftParindent=\skip65
-\RaggedRightParindent=\skip66
-\JustifyingParindent=\skip67
+\CenteringLeftskip=\skip44
+\RaggedLeftLeftskip=\skip45
+\RaggedRightLeftskip=\skip46
+\CenteringRightskip=\skip47
+\RaggedLeftRightskip=\skip48
+\RaggedRightRightskip=\skip49
+\CenteringParfillskip=\skip50
+\RaggedLeftParfillskip=\skip51
+\RaggedRightParfillskip=\skip52
+\JustifyingParfillskip=\skip53
+\CenteringParindent=\skip54
+\RaggedLeftParindent=\skip55
+\RaggedRightParindent=\skip56
+\JustifyingParindent=\skip57
 )
-LaTeX Font Info:    Font shape `OT1/ptm/bx/n' in size <14> not available
-(Font)              Font shape `OT1/ptm/b/n' tried instead on input line 34.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <12> on input line 34.
+(Font)              <12> on input line 36.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 34.
+(Font)              <8> on input line 36.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 34.
+(Font)              <6> on input line 36.
  (./intro.tex)
 (./design.tex <fig/topo.pdf, id=1, 636.3775pt x 566.115pt>
 File: fig/topo.pdf Graphic file (type pdf)
@@ -252,71 +120,70 @@ File: fig/topo.pdf Graphic file (type pdf)
 File: fig/system_arch.pdf Graphic file (type pdf)
 
 <use fig/system_arch.pdf>
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <7> on input line 36.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <5> on input line 36.
+LaTeX Font Info:    Try loading font information for OMS+cmr on input line 38.
+ (/usr/share/texmf-texlive/tex/latex/base/omscmr.fd
+File: omscmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `OMS/cmr/m/n' in size <10> not available
+(Font)              Font shape `OMS/cmsy/m/n' tried instead on input line 38.
 
-Overfull \hbox (1.11534pt too wide) in paragraph at lines 56--60
-\OT1/ptm/m/n/10 (which equals RTT/$\OT1/cmr/m/n/10 2$\OT1/ptm/m/n/10 ), so that
- all the pack-ets re-main-ing on the old route reach the client. It then sends 
-the BREAK[]-ACK
+Overfull \hbox (1.92488pt too wide) in paragraph at lines 44--46
+[]\OT1/cmr/bx/n/10 MAKE[]-ACK \OT1/cmr/m/n/10 : The NOX con-troller pre-pares i
+t-self for a \OT1/cmr/m/it/10 flow-in \OT1/cmr/m/n/10 event from the client, an
+d ac-knowl-edges
  []
 
-) (./impl.tex [1{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}])
-(./eval.tex <fig/hoolock_handover.pdf, id=12, 557.08125pt x 713.66624pt>
+[1
+
+{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <7> on input line 57.
+LaTeX Font Info:    External font `cmex10' loaded for size
+(Font)              <5> on input line 57.
+) (./impl.tex [2 <./fig/topo.pdf> <./fig/system_arch.pdf>]) (./eval.tex
+<fig/hoolock_handover.pdf, id=27, 557.08125pt x 713.66624pt>
 File: fig/hoolock_handover.pdf Graphic file (type pdf)
 
 <use fig/hoolock_handover.pdf>
-<fig/hard_handover.pdf, id=13, 557.08125pt x 732.7375pt>
+<fig/hard_handover.pdf, id=28, 557.08125pt x 732.7375pt>
 File: fig/hard_handover.pdf Graphic file (type pdf)
 
-<use fig/hard_handover.pdf> [2 <./fig/topo.pdf> <./fig/system_arch.pdf>]
-<fig/lossless.pdf, id=26, 293.095pt x 170.6375pt>
+<use fig/hard_handover.pdf> <fig/lossless.pdf, id=29, 293.095pt x 170.6375pt>
 File: fig/lossless.pdf Graphic file (type pdf)
- <use fig/lossless.pdf>
-<fig/lossy.pdf, id=27, 342.27875pt x 170.6375pt>
+
+<use fig/lossless.pdf> <fig/lossy.pdf, id=30, 342.27875pt x 170.6375pt>
 File: fig/lossy.pdf Graphic file (type pdf)
- <use fig/lossy.pdf>
-<fig/lossless_timeseries.pdf, id=28, 361.35pt x 252.945pt>
+
+<use fig/lossy.pdf> [3 <./fig/hoolock_handover.pdf> <./fig/hard_handover.pdf>]
+<fig/lossless_timeseries.pdf, id=43, 361.35pt x 252.945pt>
 File: fig/lossless_timeseries.pdf Graphic file (type pdf)
 
 <use fig/lossless_timeseries.pdf>
-<fig/lossy_timeseries.pdf, id=29, 361.35pt x 252.945pt>
+<fig/lossy_timeseries.pdf, id=44, 361.35pt x 252.945pt>
 File: fig/lossy_timeseries.pdf Graphic file (type pdf)
 
-<use fig/lossy_timeseries.pdf> [3 <./fig/hoolock_handover.pdf> <./fig/hard_hand
-over.pdf> <./fig/lossless.pdf> <./fig/lossy.pdf>]) (./concl.tex) (./report.bbl)
-
-** Conference Paper **
-Before submitting the final camera ready copy, remember to:
-
- 1. Manually equalize the lengths of two columns on the last page
- of your paper;
-
- 2. Ensure that any PostScript and/or PDF output post-processing
- uses only Type 1 fonts and that every step in the generation
- process uses the US letter (8.5in X 11in) paper size.
-
-[4 <./fig/lossless_timeseries.pdf> <./fig/lossy_timeseries.pdf>] (./report.aux)
- ) 
+<use fig/lossy_timeseries.pdf>) (./concl.tex [4 <./fig/lossless.pdf> <./fig/los
+sy.pdf> <./fig/lossless_timeseries.pdf> <./fig/lossy_timeseries.pdf>])
+(./report.bbl) [5] (./report.aux) ) 
 Here is how much of TeX's memory you used:
- 2107 strings out of 95087
- 33091 string characters out of 1183277
- 87827 words of memory out of 1500000
- 5249 multiletter control sequences out of 10000+50000
- 40328 words of font info for 77 fonts, out of 1200000 for 2000
+ 1222 strings out of 95087
+ 18342 string characters out of 1183277
+ 71245 words of memory out of 1500000
+ 4391 multiletter control sequences out of 10000+50000
+ 8848 words of font info for 31 fonts, out of 1200000 for 2000
  28 hyphenation exceptions out of 8191
- 35i,7n,38p,273b,276s stack positions out of 5000i,500n,6000p,200000b,5000s
-{/usr/share/texmf-texlive/fonts/enc/dvips/base/8r.enc}</usr/share/texmf-texli
-ve/fonts/type1/bluesky/cm/cmbx10.pfb></usr/share/texmf-texlive/fonts/type1/blue
-sky/cm/cmmi10.pfb></usr/share/texmf-texlive/fonts/type1/bluesky/cm/cmr10.pfb></
-usr/share/texmf-texlive/fonts/type1/bluesky/cm/cmsy7.pfb></usr/share/texmf-texl
-ive/fonts/type1/urw/times/utmb8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/
-times/utmr8a.pfb></usr/share/texmf-texlive/fonts/type1/urw/times/utmri8a.pfb>
-Output written on report.pdf (4 pages, 146137 bytes).
+ 35i,7n,38p,210b,287s stack positions out of 5000i,500n,6000p,200000b,5000s
+</usr/share/texmf-texlive/fonts/type1/bluesk
+y/cm/cmbx10.pfb></usr/share/texmf-texlive/fonts/type1/bluesky/cm/cmbx12.pfb></u
+sr/share/texmf-texlive/fonts/type1/bluesky/cm/cmbx9.pfb></usr/share/texmf-texli
+ve/fonts/type1/bluesky/cm/cmmi10.pfb></usr/share/texmf-texlive/fonts/type1/blue
+sky/cm/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/bluesky/cm/cmr12.pfb></u
+sr/share/texmf-texlive/fonts/type1/bluesky/cm/cmr17.pfb></usr/share/texmf-texli
+ve/fonts/type1/bluesky/cm/cmr9.pfb></usr/share/texmf-texlive/fonts/type1/bluesk
+y/cm/cmsy10.pfb></usr/share/texmf-texlive/fonts/type1/bluesky/cm/cmti10.pfb>
+Output written on report.pdf (5 pages, 159726 bytes).
 PDF statistics:
- 89 PDF objects out of 1000 (max. 8388607)
+ 103 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 131072)
  41 words of extra memory for PDF output out of 10000 (max. 10000000)
 
