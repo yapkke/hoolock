@@ -1,4 +1,4 @@
-This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=latex 2008.10.19)  12 DEC 2008 09:26
+This is pdfTeXk, Version 3.141592-1.40.3 (Web2C 7.5.6) (format=latex 2008.10.19)  12 DEC 2008 10:40
 entering extended mode
  %&-line parsing enabled.
 **report.tex
@@ -162,26 +162,27 @@ File: fig/lossless_timeseries.pdf Graphic file (type pdf)
 <fig/lossy_timeseries.pdf, id=44, 361.35pt x 252.945pt>
 File: fig/lossy_timeseries.pdf Graphic file (type pdf)
 
-<use fig/lossy_timeseries.pdf>) (./concl.tex [4 <./fig/lossless.pdf> <./fig/los
-sy.pdf> <./fig/lossless_timeseries.pdf> <./fig/lossy_timeseries.pdf>])
-(./report.bbl) [5] (./report.aux) ) 
+<use fig/lossy_timeseries.pdf>) (./lessons.tex [4 <./fig/lossless.pdf> <./fig/l
+ossy.pdf> <./fig/lossless_timeseries.pdf> <./fig/lossy_timeseries.pdf>])
+(./concl.tex) (./report.bbl) [5] (./report.aux) ) 
 Here is how much of TeX's memory you used:
- 1222 strings out of 95087
- 18342 string characters out of 1183277
+ 1225 strings out of 95087
+ 18373 string characters out of 1183277
  71245 words of memory out of 1500000
  4391 multiletter control sequences out of 10000+50000
  8848 words of font info for 31 fonts, out of 1200000 for 2000
  28 hyphenation exceptions out of 8191
  35i,7n,38p,210b,287s stack positions out of 5000i,500n,6000p,200000b,5000s
-</usr/share/texmf-texlive/fonts/type1/bluesk
-y/cm/cmbx10.pfb></usr/share/texmf-texlive/fonts/type1/bluesky/cm/cmbx12.pfb></u
-sr/share/texmf-texlive/fonts/type1/bluesky/cm/cmbx9.pfb></usr/share/texmf-texli
-ve/fonts/type1/bluesky/cm/cmmi10.pfb></usr/share/texmf-texlive/fonts/type1/blue
-sky/cm/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/bluesky/cm/cmr12.pfb></u
-sr/share/texmf-texlive/fonts/type1/bluesky/cm/cmr17.pfb></usr/share/texmf-texli
-ve/fonts/type1/bluesky/cm/cmr9.pfb></usr/share/texmf-texlive/fonts/type1/bluesk
-y/cm/cmsy10.pfb></usr/share/texmf-texlive/fonts/type1/bluesky/cm/cmti10.pfb>
-Output written on report.pdf (5 pages, 159726 bytes).
+</usr/share/texmf-texlive/font
+s/type1/bluesky/cm/cmbx10.pfb></usr/share/texmf-texlive/fonts/type1/bluesky/cm/
+cmbx12.pfb></usr/share/texmf-texlive/fonts/type1/bluesky/cm/cmbx9.pfb></usr/sha
+re/texmf-texlive/fonts/type1/bluesky/cm/cmmi10.pfb></usr/share/texmf-texlive/fo
+nts/type1/bluesky/cm/cmr10.pfb></usr/share/texmf-texlive/fonts/type1/bluesky/cm
+/cmr12.pfb></usr/share/texmf-texlive/fonts/type1/bluesky/cm/cmr17.pfb></usr/sha
+re/texmf-texlive/fonts/type1/bluesky/cm/cmr9.pfb></usr/share/texmf-texlive/font
+s/type1/bluesky/cm/cmsy10.pfb></usr/share/texmf-texlive/fonts/type1/bluesky/cm/
+cmti10.pfb>
+Output written on report.pdf (5 pages, 164504 bytes).
 PDF statistics:
  103 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 131072)

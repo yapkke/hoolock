@@ -53,11 +53,14 @@ foreach $topo (@topos) {
 				push(@pkt_loss, substr($words[$#words-2], 0, -1));
 			}
 			$xstats->add_data(@xput);
-			print sprintf("%.2f",$xstats->mean()) . " +/- " . sprintf("%.2f",$xstats->standard_deviation()) . " : @xput\n";
+			my $xci = 1.96 * $xstats->standard_deviation()/sqrt($iters);
+			#print sprintf("%.2f",$xstats->mean()) . " +/- " . sprintf("%.2f",$xci) . " : @xput\n";
 			$lstats->add_data(@pkt_loss);
-			print sprintf("%.2f",$lstats->mean()) . " +/- " . sprintf("%.2f", $lstats->standard_deviation()) . " : @pkt_loss\n";
+			my $lci = 1.96 * $lstats->standard_deviation()/sqrt($iters);
+			print sprintf("%.2f",$lstats->mean()) . " +/- " . sprintf("%.2f",$lci) . "\n";#" : @pkt_loss\n";
 			$ostats->add_data(@out_of_order);
-			print sprintf("%.2f",$ostats->mean()) . " +/- " . sprintf("%.2f", $ostats->standard_deviation()) . " : @out_of_order\n";
+			my $oci = 1.96 * $ostats->standard_deviation()/sqrt($iters);
+			#print sprintf("%.2f",$ostats->mean()) . " +/- " . sprintf("%.2f",$oci) . " : @out_of_order\n";
 		}
 		print "\n";
 	}
