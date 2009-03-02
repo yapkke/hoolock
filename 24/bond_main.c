@@ -2023,12 +2023,14 @@ static int bond_ioctl_change_active(struct net_device *bond_dev, struct net_devi
 	int res = 0;
 
 	if (!USES_PRIMARY(bond->params.mode)) {
+printk(KERN_ALERT "Error in bond_ioctl_change_ative(): Not USES_PRIMARY\n");
 		return -EINVAL;
 	}
 
 	/* Verify that master_dev is indeed the master of slave_dev */
 	if (!(slave_dev->flags & IFF_SLAVE) ||
 	    (slave_dev->master != bond_dev)) {
+printk(KERN_ALERT "Error in bond_ioctl_change_active(): slave_dev->flags & IFF_SLAVE == 0 or master not bond\n");
 		return -EINVAL;
 	}
 
@@ -2044,6 +2046,7 @@ static int bond_ioctl_change_active(struct net_device *bond_dev, struct net_devi
 	 * Changing to the current active: do nothing; return success.
 	 */
 	if (new_active && (new_active == old_active)) {
+printk(KERN_ALERT "bond_ioctl_change_ative(): Already using active slave\n");
 		read_unlock(&bond->lock);
 		return 0;
 	}
@@ -2052,10 +2055,12 @@ static int bond_ioctl_change_active(struct net_device *bond_dev, struct net_devi
 	    (old_active) &&
 	    (new_active->link == BOND_LINK_UP) &&
 	    IS_UP(new_active->dev)) {
+printk(KERN_ALERT "bond_ioctl_change_ative(): About to call bond_change_active_slave\n");
 		write_lock_bh(&bond->curr_slave_lock);
 		bond_change_active_slave(bond, new_active);
 		write_unlock_bh(&bond->curr_slave_lock);
 	} else {
+printk(KERN_ALERT "Error in bond_ioctl_change_ative(): Cannot change active slave\n");
 		res = -EINVAL;
 	}
 
@@ -2112,6 +2117,29 @@ static int bond_slave_info_query(struct net_device *bond_dev, struct ifslave *in
 }
 
 /* --------------------------------Hoolock IOCTL ----------------------------*/
+
+static int bond_ioctl_hoolock_change_active(struct bonding *bond)
+{
+	/* 
+	 * Change current active slave
+	 * Set buffer mode on
+	 */
+	int i;
+	struct slave *slave_pos;
+	/* Acquire the locks */
+	read_lock(&bond->lock);
+	write_lock_bh(&bond->curr_slave_lock);
+	bond_for_each_slave(bond, slave_pos, i) {
+		if(slave_pos != bond->curr_active_slave) {
+			bond_change_active_slave(bond, slave_pos);
+			break;
+		}
+	}
+	/* Release the locks */
+	write_unlock_bh(&bond->curr_slave_lock);
+	read_unlock(&bond->lock);
+	return 0;
+}
 
 static int bond_ioctl_make(struct bonding *bond)
 {
@@ -4091,6 +4119,7 @@ static int bond_do_ioctl(struct net_device *bond_dev, struct ifreq *ifr, int cmd
 		return res;
 	case SIOCBONDHOOLOCKTEST:
 		printk("Yay! Bond ioctl test works!\n");
+		res = bond_ioctl_hoolock_change_active(bond);
 		return 0;
 
 	default:
