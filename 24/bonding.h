@@ -65,8 +65,7 @@
 #define USES_PRIMARY(mode)				\
 		(((mode) == BOND_MODE_ACTIVEBACKUP) ||	\
 		 ((mode) == BOND_MODE_TLB)          ||	\
-		 ((mode) == BOND_MODE_ALB)			||	\
-		 ((mode) == BOND_MODE_HOOLOCK))
+		 ((mode) == BOND_MODE_ALB))
 
 /*
  * Less bad way to call ioctl from within the kernel; this needs to be
