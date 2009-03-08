@@ -39,7 +39,7 @@ void set_active_slave_command(char* command, char* bond_name, char* interface){
 }
 
 void set_association_command(char* command, char* interface, char* essid){
-	sprintf(command, "iwconfig %s essid %s ap auto", interface, essid);
+	sprintf(command, "iwconfig %s essid %s", interface, essid);
 }
 
 void set_deassociation_command(char* command, char* interface){
@@ -92,14 +92,17 @@ int main(int argc, char *argv[])
 	sprintf(command, "ifconfig bond0");
 	execute_command(command);
 
-	/* Initial bonding tx interface */
-	cur_interface = 0;
-	set_active_slave_command(command, bond_name, interfaces[cur_interface]);
-	execute_command(command);
 
 	/* Initial AP association */
+	cur_interface = 0;
 	cur_essid = 0;
 	set_association_command(command, interfaces[cur_interface], essids[cur_essid]);
+	execute_command(command);
+	
+	sleep(1);
+
+	/* Initial bonding tx interface */
+	set_active_slave_command(command, bond_name, interfaces[cur_interface]);
 	execute_command(command);
 
 	/* Switching */
@@ -122,6 +125,8 @@ int main(int argc, char *argv[])
 				// Associate with next essid
 				set_association_command(command, interfaces[next_interface], essids[next_essid]);
 				execute_command(command);
+
+				usleep(500);
 
 				// Send "make" ioctl command to bonding driver
 				send_ioctl_command(skfd, SIOCBONDHOOLOCKMAKE, &ifr);
