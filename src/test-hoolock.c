@@ -23,23 +23,34 @@ typedef __uint8_t u8;		/* ditto */
 
 //#define SIOCBONDHOOLOCKTEST 0x899a
 
+#define DEFAULT_BOND_NAME "bond0"
+#define DEFAULT_SLEEP_TIME 5000 // fed to usleep()
+
 int main(int argc, char *argv[])
 {
-	/* Open a basic socket */
-	int skfd = -1;
-	char *bond_name;
-	if(argc <= 1) {
-		printf("Need bond name!\n");
-		return -1;
+	char bond_name[64] = DEFAULT_BOND_NAME; // Interface name
+	int sleep_time = DEFAULT_SLEEP_TIME;  // Sleep duration in usec
+
+	if(argc > 1) {
+		strcpy(bond_name, argv[1]);
 	}
-	bond_name = argv[1];
+
+	if(argc > 2){
+		sleep_time = atoi(argv[2]);
+	}
+	if(sleep_time <= 0) sleep_time = DEFAULT_SLEEP_TIME;
+
+	/* Open a basic socket for communicating with bonding driver */
+	int skfd = -1;
 	if ((skfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
 		printf("Failed to open socket\n");
 		return -1;
 	}
-
+	
 	struct ifreq ifr;
 	strcpy(ifr.ifr_name, bond_name);
+
+	
 	if (ioctl(skfd, SIOCBONDHOOLOCKTEST, &ifr) < 0) {
 		printf("ioctl call failed :(\n");
 		return -1;
