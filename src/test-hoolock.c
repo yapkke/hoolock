@@ -86,7 +86,7 @@ int main(int argc, char *argv[])
 
 	/* Initial bonding tx interface */
 	cur_interface = 0;
-	set_active_slave_comand(command, bond_name, cur_interface);
+	set_active_slave_command(command, bond_name, cur_interface);
 	execute_command(command);
 
 	/* Initial AP association */
