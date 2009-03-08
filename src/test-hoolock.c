@@ -118,7 +118,7 @@ int main(int argc, char *argv[])
 		if(menu_selection[0] == 'q') break;
 		switch(menu_selection[0]){
 			case '1':
-				printf("Starting switching, sleep time = %d usec", sleep_time);
+				printf("Starting switching, sleep time = %d usec\n", sleep_time);
 				next_interface = (cur_interface + 1) % NUM_INTERFACES;
 				next_essid = (cur_essid + 1) % NUM_ESSIDS;
 				
@@ -126,7 +126,7 @@ int main(int argc, char *argv[])
 				set_association_command(command, interfaces[next_interface], essids[next_essid]);
 				execute_command(command);
 
-				usleep(500);
+				usleep(1000);
 
 				// Send "make" ioctl command to bonding driver
 				send_ioctl_command(skfd, SIOCBONDHOOLOCKMAKE, &ifr);
