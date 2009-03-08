@@ -40,7 +40,7 @@ void set_association_command(char* command, char* interface, char* essid){
 	sprintf(command, "iwconfig %s essid %s ap auto", interface, essid);
 }
 
-void set_deassociation_command(char* command, char* interface, char* essid){
+void set_deassociation_command(char* command, char* interface){
 	sprintf(command, "iwconfig %s essid \"xxxx\" ap off", interface);
 }
 
