@@ -27,6 +27,8 @@ typedef __uint8_t u8;		/* ditto */
 #define NUM_INTERFACES 2
 #define NUM_ESSIDS 2
 
+#define bond_mac_addr "00:1c:f0:ed:98:5a"
+
 char interfaces[NUM_INTERFACES][64] = {"ath0", "wlan0"};
 char essids[NUM_ESSIDS][64] = {"cleanslatewifi1", "cleanslatewifi2"};
 
@@ -84,9 +86,15 @@ int main(int argc, char *argv[])
 	int cur_interface, cur_essid;
 	int next_interface, next_essid;
 
+	/* Make sure bonding is using the required mac address (ath0 in cleanslate testbed) */
+	sprintf(command, "ifconfig bond0 hw ether %s", bond_mac_addr);
+	execute_command(command);
+	sprintf(command, "ifconfig bond0");
+	execute_command(command);
+
 	/* Initial bonding tx interface */
 	cur_interface = 0;
-	set_active_slave_command(command, bond_name, cur_interface);
+	set_active_slave_command(command, bond_name, interfaces[cur_interface]);
 	execute_command(command);
 
 	/* Initial AP association */
