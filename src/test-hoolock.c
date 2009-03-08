@@ -40,7 +40,7 @@ void set_association_command(char* command, char* interface, char* essid){
 	sprintf(command, "iwconfig %s essid %s ap auto", interface, essid);
 }
 
-void set_association_command(char* command, char* interface, char* essid){
+void set_deassociation_command(char* command, char* interface, char* essid){
 	sprintf(command, "iwconfig %s essid \"xxxx\" ap off", interface);
 }
 
@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
 
 	/* Initial AP association */
 	cur_essid = 0;
-	set_association_command(command, cur_interface, cur_essid);
+	set_association_command(command, interfaces[cur_interface], essids[cur_essid]);
 	execute_command(command);
 
 	/* Switching */
@@ -112,7 +112,7 @@ int main(int argc, char *argv[])
 				next_essid = (cur_essid + 1) % NUM_ESSIDS;
 				
 				// Associate with next essid
-				set_association_command(command, next_interface, next_essid);
+				set_association_command(command, interfaces[next_interface], essids[next_essid]);
 				execute_command(command);
 
 				// Send "make" ioctl command to bonding driver
@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
 				send_ioctl_command(skfd, SIOCBONDHOOLOCKBREAK, &ifr);	
 
 				// Deassociate with original essid
-				set_deassociation_command(command, cur_interface);
+				set_deassociation_command(command, interfaces[cur_interface]);
 				execute_command(command);
 				
 				cur_interface = next_interface;
