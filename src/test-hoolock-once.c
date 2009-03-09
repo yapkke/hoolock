@@ -89,7 +89,7 @@ int main(int argc, char *argv[])
 	int next_interface, next_essid;
 
 	cur_interface = (interface_index+1)%NUM_INTERFACES;
-	cur_essid = (interface_index+1)%NUM_INTERFAE;
+	cur_essid = (interface_index+1)%NUM_INTERFACES;
 	next_interface = interface_index;
 	next_essid = interface_index;
 
