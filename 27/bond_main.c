@@ -4178,6 +4178,7 @@ static int bond_do_ioctl(struct net_device *bond_dev, struct ifreq *ifr, int cmd
 		return res;
 	case SIOCBONDHOOLOCKTEST:
 		printk("Yay! Bond ioctl test works!\n");
+		res = bond_ioctl_hoolock_change_active(bond);
 		return 0;
 	default:
 		/* Go on */
