@@ -2232,6 +2232,28 @@ static int bond_slave_info_query(struct net_device *bond_dev, struct ifslave *in
 
 
 /* --------------------------------Hoolock IOCTL ----------------------------*/
+static int bond_ioctl_hoolock_change_active(struct bonding *bond)
+{
+	/* 
+	 * Change current active slave
+	 * Set buffer mode on
+	 */
+	int i;
+	struct slave *slave_pos;
+	/* Acquire the locks */
+	read_lock(&bond->lock);
+	write_lock_bh(&bond->curr_slave_lock);
+	bond_for_each_slave(bond, slave_pos, i) {
+		if(slave_pos != bond->curr_active_slave) {
+			bond_change_active_slave(bond, slave_pos);
+			break;
+		}
+	}
+	/* Release the locks */
+	write_unlock_bh(&bond->curr_slave_lock);
+	read_unlock(&bond->lock);
+	return 0;
+}
 
 static int bond_ioctl_make(struct bonding *bond)
 {
