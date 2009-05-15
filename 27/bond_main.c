@@ -2232,7 +2232,7 @@ static int bond_slave_info_query(struct net_device *bond_dev, struct ifslave *in
 
 
 /* --------------------------------Hoolock IOCTL ----------------------------*/
-static int bond_ioctl_hoolock_change_active(struct bonding *bond)
+static int bond_ioctl_hoolock_change_active(struct bonding *bond, struct net_device *slave_dev)
 {
 	/* 
 	 * Change current active slave
@@ -2244,7 +2244,7 @@ static int bond_ioctl_hoolock_change_active(struct bonding *bond)
 	read_lock(&bond->lock);
 	write_lock_bh(&bond->curr_slave_lock);
 	bond_for_each_slave(bond, slave_pos, i) {
-		if(slave_pos != bond->curr_active_slave) {
+		if(slave_pos->dev == slave_dev) {
 			bond_change_active_slave(bond, slave_pos);
 			break;
 		}
@@ -4198,10 +4198,10 @@ static int bond_do_ioctl(struct net_device *bond_dev, struct ifreq *ifr, int cmd
 	case SIOCBONDHOOLOCKBREAK:
 		res = bond_ioctl_break(bond);
 		return res;
-	case SIOCBONDHOOLOCKTEST:
+	/*case SIOCBONDHOOLOCKTEST:
 		printk("Yay! Bond ioctl test works!\n");
 		res = bond_ioctl_hoolock_change_active(bond);
-		return 0;
+		return 0;*/
 	default:
 		/* Go on */
 		break;
@@ -4243,6 +4243,10 @@ static int bond_do_ioctl(struct net_device *bond_dev, struct ifreq *ifr, int cmd
 		case SIOCBONDHOOLOCKBREAK:
 			res = bond_ioctl_break(bond);
 			break;*/
+		case SIOCBONDHOOLOCKTEST:
+			printk("Yay! Bond ioctl test works!\n");
+			res = bond_ioctl_hoolock_change_active(bond, slave_dev);
+			break;
 		default:
 			res = -EOPNOTSUPP;
 		}
