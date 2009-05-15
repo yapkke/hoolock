@@ -2246,7 +2246,7 @@ static int bond_ioctl_hoolock_change_active(struct bonding *bond, struct net_dev
 	write_lock_bh(&bond->curr_slave_lock);
 	bond_for_each_slave(bond, slave_pos, i) {
 		if(slave_pos == new_active) {
-			printk(KERN_ALERT "Changing to designated slave interface");
+			printk(KERN_ALERT "Changing to designated slave interface: %s\n", slave_dev->name);
 			bond_change_active_slave(bond, slave_pos);
 			break;
 		}
@@ -4224,7 +4224,7 @@ static int bond_do_ioctl(struct net_device *bond_dev, struct ifreq *ifr, int cmd
 	if (!slave_dev) {
 		res = -ENODEV;
 	} else {
-		dprintk("slave_dev->name=%s: \n", slave_dev->name);
+		printk("slave_dev->name=%s: \n", slave_dev->name);
 		switch (cmd) {
 		case BOND_ENSLAVE_OLD:
 		case SIOCBONDENSLAVE:
