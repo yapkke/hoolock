@@ -2344,13 +2344,13 @@ int bond_hoolock_recv(struct sk_buff *skb, struct net_device *dev, struct packet
 	read_lock(&bond->lock);
 	read_lock_bh(&bond->curr_slave_lock);
 
-	/*if((bond->buffer_mode) && (orig_dev == (struct net_device*)bond->curr_active_slave)) {
+	if((bond->buffer_mode) && (orig_dev == (struct net_device*)bond->curr_active_slave)) {
 		write_lock_bh((rwlock_t*)&bond->pbuff.lock);
 		printk("bond_hoolock_recv: Buffering packet from %s\n", orig_dev->name);
 		skb_queue_tail(&(bond->pbuff), skb);
 		ret = -EHOOLOCKBUFF;
 		write_unlock_bh((rwlock_t*)&bond->pbuff.lock);
-	}*/
+	}
 
 	/* Release locks */
 	read_unlock_bh(&bond->curr_slave_lock);
