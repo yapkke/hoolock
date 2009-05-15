@@ -2242,9 +2242,11 @@ static int bond_ioctl_hoolock_change_active(struct bonding *bond, struct net_dev
 	struct slave *slave_pos;
 	/* Acquire the locks */
 	read_lock(&bond->lock);
+	struct slave *new_active = bond_get_slave_by_dev(bond, slave_dev);
 	write_lock_bh(&bond->curr_slave_lock);
 	bond_for_each_slave(bond, slave_pos, i) {
-		if(slave_pos->dev == slave_dev) {
+		if(slave_pos == new_active) {
+			printk(KERN_ALERT "Changing to designated slave interface");
 			bond_change_active_slave(bond, slave_pos);
 			break;
 		}
