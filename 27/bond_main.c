@@ -4224,7 +4224,7 @@ static int bond_do_ioctl(struct net_device *bond_dev, struct ifreq *ifr, int cmd
 	if (!slave_dev) {
 		res = -ENODEV;
 	} else {
-		printk("slave_dev->name=%s: \n", slave_dev->name);
+		dprintk("slave_dev->name=%s: \n", slave_dev->name);
 		switch (cmd) {
 		case BOND_ENSLAVE_OLD:
 		case SIOCBONDENSLAVE:
